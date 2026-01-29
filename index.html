@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 9 Science: The Big Four + Preview</title>
+    <style>
+        :root {
+            --chem: #ef4444; --bio: #22c55e; --astro: #6366f1; --elec: #eab308; --dark: #1e293b;
+        }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #f1f5f9; padding: 20px; color: var(--dark); }
+        .container { max-width: 850px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); overflow: hidden; }
+        .nav-tabs { display: flex; background: #e2e8f0; }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; border: none; background: none; }
+        .tab.active { background: white; color: var(--dark); border-bottom: 3px solid var(--dark); }
+        .unit-banner { padding: 10px; text-align: center; color: white; font-weight: bold; text-transform: uppercase; }
+        .content { padding: 30px; min-height: 400px; }
+        .hidden { display: none; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; transition: 0.2s; }
+        button.opt:hover:not(:disabled) { border-color: #94a3b8; background: #f8fafc; }
+        #feedback { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; border-left: 6px solid; }
+        .correct-ui { border-color: var(--bio); background: #f0fdf4; color: #166534; }
+        .wrong-ui { border-color: var(--chem); background: #fef2f2; color: #991b1b; }
+        .preview-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid; }
+        .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="nav-tabs">
+        <button id="tab-game" class="tab active" onclick="switchTab('game')">🎮 Play Game</button>
+        <button id="tab-preview" class="tab" onclick="switchTab('preview')">👁️ Study Preview</button>
+    </div>
+
+    <div id="section-game">
+        <div id="unit-tag" class="unit-banner">Chemistry</div>
+        <div class="content">
+            <div id="q-text" style="font-size: 1.2rem; font-weight: 500;">Ready?</div>
+            <div class="grid" id="options-grid"></div>
+            <div id="feedback"></div>
+            <button class="next-btn" id="next-btn" style="display:none" onclick="loadQuestion()">Next Concept →</button>
+        </div>
+    </div>
+
+    <div id="section-preview" class="hidden">
+        <div class="unit-banner" style="background: var(--dark)">Concept Summary</div>
+        <div class="content" id="preview-list">
+            </div>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            unit: "Chemistry", color: "var(--chem)",
+            q: "An atom has 11 protons and 12 neutrons. What is its **Mass Number**?",
+            options: ["11", "12", "23", "1"], correct: "23",
+            explain: "Mass Number = Protons + Neutrons. $11 + 12 = 23$."
+        },
+        {
+            unit: "Biology", color: "var(--bio)",
+            q: "During which phase do chromosomes line up in the **middle**?",
+            options: ["Prophase", "Metaphase", "Anaphase", "Telophase"], correct: "Metaphase",
+            explain: "Metaphase = Middle. Spindle fibers align them for separation."
+        },
+        {
+            unit: "Astronomy", color: "var(--astro)",
+            q: "Which property measures a star's **actual** energy output?",
+            options: ["Apparent Magnitude", "Luminosity", "Parallax", "Retrograde"], correct: "Luminosity",
+            explain: "Luminosity is the true power output; Apparent Magnitude is just how it looks from Earth."
+        },
+        {
+            unit: "Electricity", color: "var(--elec)",
+            q: "In a **Series** circuit, adding more resistors causes current to...",
+            options: ["Increase", "Decrease", "Stay the same", "Become AC"], correct: "Decrease",
+            explain: "Adding resistors in series increases total resistance ($R$). Since $I = V/R$, current decreases."
+        }
+    ];
+
+    let currentIdx = 0;
+
+    function switchTab(mode) {
+        document.getElementById('section-game').classList.toggle('hidden', mode !== 'game');
+        document.getElementById('section-preview').classList.toggle('hidden', mode !== 'preview');
+        document.getElementById('tab-game').classList.toggle('active', mode === 'game');
+        document.getElementById('tab-preview').classList.toggle('active', mode === 'preview');
+        if(mode === 'preview') renderPreview();
+    }
+
+    function renderPreview() {
+        const list = document.getElementById('preview-list');
+        list.innerHTML = quizData.map(item => `
+            <div class="preview-card" style="border-left-color: ${item.color}">
+                <strong style="color:${item.color}">${item.unit}</strong><br>
+                <em>Topic:</em> ${item.q}<br>
+                <strong>Key Rule:</strong> ${item.explain}
+            </div>
+        `).join('');
+    }
+
+    function loadQuestion() {
+        if(currentIdx >= quizData.length) {
+            document.getElementById('section-game').innerHTML = "<div class='content'><h2>Review Complete!</h2><button onclick='location.reload()' class='next-btn'>Restart</button></div>";
+            return;
+        }
+        const data = quizData[currentIdx];
+        document.getElementById('unit-tag').innerText = data.unit;
+        document.getElementById('unit-tag').style.background = data.color;
+        document.getElementById('q-text').innerHTML = data.q;
+        const grid = document.getElementById('options-grid');
+        grid.innerHTML = '';
+        data.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'opt';
+            btn.innerText = opt;
+            btn.onclick = () => {
+                document.getElementById('feedback').style.display = 'block';
+                document.getElementById('feedback').className = (opt === data.correct) ? 'correct-ui' : 'wrong-ui';
+                document.getElementById('feedback').innerHTML = (opt === data.correct ? "✅ Correct! " : "❌ Incorrect. ") + data.explain;
+                document.getElementById('next-btn').style.display = 'block';
+                document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+                currentIdx++;
+            };
+            grid.appendChild(btn);
+        });
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+    }
+
+    loadQuestion();
+</script>
+</body>
+</html>
