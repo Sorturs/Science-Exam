@@ -2,132 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Science Mastery: Left/Right Split</title>
+    <title>Grade 9 Science: Infinite Exam Dash</title>
     <style>
         :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; }
-        body { font-family: 'Inter', sans-serif; background: #cbd5e1; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 1000px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; display: flex; height: 750px; }
-        
-        /* LEFT SIDE: Questions */
-        .left-side { flex: 1.5; display: flex; flex-direction: column; border-right: 2px solid #e2e8f0; background: #fff; }
-        .header { padding: 15px; text-align: center; color: white; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; }
-        .content { padding: 25px; overflow-y: auto; flex-grow: 1; }
-        
-        /* RIGHT SIDE: Calculator */
-        .right-side { flex: 1; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .calc-display { width: 90%; background: #1e293b; color: #10b981; padding: 15px; border-radius: 8px; text-align: right; font-size: 1.5rem; margin-bottom: 15px; font-family: monospace; min-height: 40px; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
-        .calc-btn { padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; background: white; font-weight: bold; font-size: 1.1rem; }
-        .calc-btn:hover { background: #e2e8f0; }
-
-        .visual-box { background: #f1f5f9; border-radius: 12px; padding: 20px; margin-bottom: 20px; font-family: 'Courier New', monospace; white-space: pre-wrap; border: 1px solid #e2e8f0; font-size: 1rem; }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; text-align: left; font-size: 1rem; }
-        button.opt:hover:not(:disabled) { border-color: var(--dark); background: #f1f5f9; }
-        .feedback { margin-top: 15px; padding: 15px; border-radius: 10px; display: none; line-height: 1.5; border-left: 8px solid; font-size: 0.95rem; }
-        .correct { background: #dcfce7; border-color: var(--eco); color: #166534; }
-        .wrong { background: #fee2e2; border-color: var(--chem); color: #991b1b; }
-        .next-btn { width: 100%; margin-top: 15px; padding: 15px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        body { font-family: 'Inter', sans-serif; background: #cbd5e1; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .header { padding: 20px; text-align: center; color: white; font-weight: 800; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        .content { padding: 40px; min-height: 400px; }
+        .visual-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 25px; margin-bottom: 25px; font-family: 'Courier New', monospace; white-space: pre-wrap; font-size: 1.2rem; text-align: center; }
+        .q-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 30px; color: #1e293b; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button.opt { padding: 18px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; cursor: pointer; transition: 0.3s; font-size: 1.1rem; font-weight: 500; }
+        button.opt:hover:not(:disabled) { border-color: var(--dark); background: #f1f5f9; transform: translateY(-2px); }
+        .feedback { margin-top: 25px; padding: 25px; border-radius: 15px; display: none; line-height: 1.6; border-left: 10px solid; font-size: 1.1rem; }
+        .correct { background: #dcfce7; border-color: var(--eco); color: #14532d; }
+        .wrong { background: #fef2f2; border-color: var(--chem); color: #7f1d1d; }
+        .next-btn { width: 100%; margin-top: 25px; padding: 20px; background: var(--dark); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: none; }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="left-side">
-        <div id="unit-banner" class="header">Unit Name</div>
-        <div class="content">
-            <div id="visual" class="visual-box"></div>
-            <div id="question" style="font-weight:700; font-size:1.2rem; margin-bottom:15px; color:#1e293b;"></div>
-            <div id="options" class="grid"></div>
-            <div id="feedback" class="feedback"></div>
-            <button id="next-btn" class="next-btn" style="display:none" onclick="generateQuestion()">Next Random Challenge →</button>
-        </div>
-    </div>
-
-    <div class="right-side">
-        <h3 style="margin-top:0; color:#1e293b;">Scientific Calculator</h3>
-        <div id="display" class="calc-display">0</div>
-        <div class="calc-grid">
-            <button class="calc-btn" onclick="cClear()">C</button>
-            <button class="calc-btn" onclick="cPress('/')">÷</button>
-            <button class="calc-btn" onclick="cPress('*')">×</button>
-            <button class="calc-btn" onclick="cPress('-')">-</button>
-            <button class="calc-btn" onclick="cPress('7')">7</button>
-            <button class="calc-btn" onclick="cPress('8')">8</button>
-            <button class="calc-btn" onclick="cPress('9')">9</button>
-            <button class="calc-btn" onclick="cPress('+')">+</button>
-            <button class="calc-btn" onclick="cPress('4')">4</button>
-            <button class="calc-btn" onclick="cPress('5')">5</button>
-            <button class="calc-btn" onclick="cPress('6')">6</button>
-            <button class="calc-btn" onclick="cSolve()">=</button>
-            <button class="calc-btn" onclick="cPress('1')">1</button>
-            <button class="calc-btn" onclick="cPress('2')">2</button>
-            <button class="calc-btn" onclick="cPress('3')">3</button>
-            <button class="calc-btn" onclick="cPress('0')">0</button>
-        </div>
-        <div style="margin-top:25px; background:#fff; padding:15px; border-radius:10px; border:1px solid #e2e8f0; width:90%; font-size:0.85rem;">
-            <b>Math Refresher:</b><br>
-            Density: $D = M \div V$<br>
-            Current: $I = V \div R$<br>
-            <b>Level 4+ Goal:</b> Explain the <i>reason</i> why!
-        </div>
+    <div id="unit-banner" class="header">Unit Name</div>
+    <div class="content">
+        <div id="visual" class="visual-box"></div>
+        <div id="question" class="q-text"></div>
+        <div id="options" class="grid"></div>
+        <div id="feedback" class="feedback"></div>
+        <button id="next-btn" class="next-btn" onclick="generateQuestion()">Next Random Challenge →</button>
     </div>
 </div>
 
 <script>
-    let calcExp = "";
-    function cPress(v) { calcExp += v; document.getElementById('display').innerText = calcExp; }
-    function cClear() { calcExp = ""; document.getElementById('display').innerText = "0"; }
-    function cSolve() { try { calcExp = eval(calcExp).toString(); document.getElementById('display').innerText = calcExp; } catch { document.getElementById('display').innerText = "Err"; } }
+    function generateQuestion() {
+        const units = ["Chemistry", "Electricity", "Ecology", "Astronomy"];
+        const unit = units[Math.floor(Math.random() * units.length)];
+        let data = {};
 
-    const generators = [
-        () => {
-            const m = Math.floor(Math.random() * 450) + 150;
-            const v = Math.floor(Math.random() * 45) + 5;
-            const d = (m/v).toFixed(2);
-            return {
-                unit: "Chemistry", color: "var(--chem)", visual: `MASS: ${m}g\nVOLUME: ${v}cm³`,
-                q: "Using your calculator, find the density. Is this a quantitative or qualitative property?",
-                options: [d+" g/cm³ (Quantitative)", (m*v).toFixed(0)+" g/cm³ (Qualitative)", (v/m).toFixed(2)+" g/cm³ (Quantitative)", "1.00 g/cm³ (Qualitative)"],
-                answer: d+" g/cm³ (Quantitative)",
-                explain: `<strong>Level 4+ Analysis:</strong> $D = m/V$ (${m} ÷ ${v} = ${d}). This is <b>Quantitative</b> because it is a numerical measurement.`
+        if (unit === "Chemistry") {
+            const m = Math.floor(Math.random() * 450) + 50;
+            const v = Math.floor(Math.random() * 40) + 5;
+            const ans = (m/v).toFixed(2);
+            data = {
+                color: "var(--chem)", visual: `MASS: ${m}g\nVOLUME: ${v}cm³`,
+                q: "Using $D = m/V$, what is the density of this substance?",
+                options: [ans+" g/cm³", (m*v).toFixed(0)+" g/cm³", (v/m).toFixed(2)+" g/cm³", "1.00 g/cm³"],
+                answer: ans+" g/cm³",
+                explain: `<strong>Level 4+ Logic:</strong> We divide mass by volume. In your real test, $360 \\div 45 = 8.0$. This is a quantitative physical property.`
             };
-        },
-        () => {
-            const v = [9, 12, 18, 24][Math.floor(Math.random()*4)];
-            const r = [2, 3, 4, 6][Math.floor(Math.random()*4)];
+        } 
+        else if (unit === "Electricity") {
+            const v = [6, 9, 12, 24][Math.floor(Math.random()*4)];
+            const r = [2, 3, 5, 10][Math.floor(Math.random()*4)];
             const i = (v/r).toFixed(1);
-            return {
-                unit: "Electricity", color: "var(--elec)", visual: `VOLTS: ${v}V\nOHMS (Ω): ${r}`,
-                q: "What is the Current (I) in Amps?",
-                options: [i+"A", (v*r)+"A", (r/v).toFixed(1)+"A", (v+r)+"A"],
+            data = {
+                color: "var(--elec)", visual: `VOLTS: ${v}V\nRESISTANCE: ${r}Ω`,
+                q: "Using $I = V/R$, what is the Current (I) in Amps?",
+                options: [i+"A", (v*r)+"A", (v+r)+"A", (r/v).toFixed(1)+"A"],
                 answer: i+"A",
-                explain: "<strong>Level 4+ Analysis:</strong> $I = V/R$. Current is the flow rate of charge. Increasing resistance lowers the current."
-            };
-        },
-        () => {
-            const p = [{n:"Mars", t:"Terrestrial", f:"Rocky, high density, inner."}, {n:"Neptune", t:"Gas Giant", f:"Gaseous, low density, outer."}][Math.floor(Math.random()*2)];
-            return {
-                unit: "Astronomy", color: "var(--space)", visual: `PLANET: ${p.n}`,
-                q: `Classify ${p.n} and explain the formation theory (Level 4).`,
-                options: ["Terrestrial (Inner)", "Gas Giant (Outer)", "Dwarf Planet", "Exoplanet"],
-                answer: p.t === "Terrestrial" ? "Terrestrial (Inner)" : "Gas Giant (Outer)",
-                explain: `<strong>Level 4+ Analysis:</strong> ${p.n} is a <b>${p.t}</b> planet. ${p.f} This is due to the 'Frost Line' theory where only solids condensed near the Sun.`
-            };
-        },
-        () => {
-            return {
-                unit: "Ecology", color: "var(--eco)", visual: `CASE STUDY: DDT in a lake.`,
-                q: "Why does the Osprey (Top Bird) have the most toxins?",
-                options: ["Biomagnification", "Bioaccumulation", "Photosynthesis", "Biodiversity"],
-                answer: "Biomagnification",
-                explain: `<strong>Level 4+ Analysis:</strong> This is <b>Biomagnification</b>. Toxins concentrate as you move up the food chain because they are stored in tissues and not excreted.`
+                explain: "<strong>Level 4+ Logic:</strong> Cover 'I' on your VIR triangle. Dividing Voltage by Resistance gives you the electron flow rate (Amps)."
             };
         }
-    ];
+        else if (unit === "Ecology") {
+            const species = ["Osprey", "Bald Eagle", "Large Bass", "Polar Bear"][Math.floor(Math.random()*4)];
+            data = {
+                color: "var(--eco)", visual: `TOXIN: DDT\nTOP PREDATOR: ${species}`,
+                q: `Why does the ${species} have the highest toxin levels in the food web?`,
+                options: ["Biomagnification", "Bioaccumulation", "Photosynthesis", "Particle Theory"],
+                answer: "Biomagnification",
+                explain: "<strong>Level 4+ Logic:</strong> Bioaccumulation is in one animal; Biomagnification is the <i>increase</i> in concentration as you move up the food chain."
+            };
+        }
+        else {
+            const p = ["Venus", "Mars", "Jupiter", "Saturn"][Math.floor(Math.random()*4)];
+            const isRocky = (p === "Venus" || p === "Mars");
+            data = {
+                color: "var(--space)", visual: `PLANET: ${p}`,
+                q: `How is ${p} classified based on the 'Frost Line' theory?`,
+                options: ["Terrestrial (Rocky/Inner)", "Gas Giant (Fluid/Outer)", "Dwarf Planet", "Exoplanet"],
+                answer: isRocky ? "Terrestrial (Rocky/Inner)" : "Gas Giant (Outer/Fluid)",
+                explain: `<strong>Level 4+ Logic:</strong> ${p} is ${isRocky ? 'Rocky' : 'Gaseous'}. Near the sun, only rocks stay solid; far away (past the frost line), gases condense.`
+            };
+        }
 
-    function generateQuestion() {
-        const data = generators[Math.floor(Math.random() * generators.length)]();
-        document.getElementById('unit-banner').innerText = data.unit.toUpperCase();
+        document.getElementById('unit-banner').innerText = unit.toUpperCase();
         document.getElementById('unit-banner').style.background = data.color;
         document.getElementById('visual').innerText = data.visual;
         document.getElementById('question').innerText = data.q;
@@ -141,7 +98,7 @@
                 const fb = document.getElementById('feedback');
                 fb.style.display = 'block';
                 fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
-                fb.innerHTML = `<b>${o === data.answer ? '✅ LEVEL 4+ SUCCESS' : '❌ LEVEL UP TIP'}</b><br>${data.explain}`;
+                fb.innerHTML = `<b>${o === data.answer ? '✅ LEVEL 4+ ANALYSIS' : '❌ LEVEL UP TIP'}</b><br>${data.explain}`;
                 document.getElementById('next-btn').style.display = 'block';
                 document.querySelectorAll('.opt').forEach(btn => btn.disabled = true);
             };
