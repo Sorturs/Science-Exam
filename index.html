@@ -3,127 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 9 Science: The Big Four + Preview</title>
+    <title>Grade 9 Science Exam: The Four Pillars</title>
     <style>
         :root {
-            --chem: #ef4444; --bio: #22c55e; --astro: #6366f1; --elec: #eab308; --dark: #1e293b;
+            --chem: #ef4444; --bio: #22c55e; --astro: #6366f1; --elec: #f59e0b; --dark: #0f172a;
         }
-        body { font-family: 'Inter', system-ui, sans-serif; background: #f1f5f9; padding: 20px; color: var(--dark); }
-        .container { max-width: 850px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); overflow: hidden; }
-        .nav-tabs { display: flex; background: #e2e8f0; }
-        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; border: none; background: none; }
-        .tab.active { background: white; color: var(--dark); border-bottom: 3px solid var(--dark); }
-        .unit-banner { padding: 10px; text-align: center; color: white; font-weight: bold; text-transform: uppercase; }
-        .content { padding: 30px; min-height: 400px; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #e2e8f0; margin: 0; display: flex; justify-content: center; padding: 20px; }
+        .app-container { width: 100%; max-width: 900px; background: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden; }
+        .nav { display: flex; background: #1e293b; padding: 10px; gap: 10px; }
+        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; color: white; background: rgba(255,255,255,0.1); }
+        .nav button.active { background: white; color: var(--dark); }
+        .banner { padding: 15px; text-align: center; font-weight: 800; color: white; letter-spacing: 2px; }
+        .main-content { padding: 30px; min-height: 450px; }
+        .question-box { font-size: 1.4rem; font-weight: 600; margin-bottom: 25px; line-height: 1.4; color: var(--dark); }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .btn-opt { padding: 20px; border: 2px solid #cbd5e1; border-radius: 12px; background: white; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; }
+        .btn-opt:hover { background: #f1f5f9; border-color: #64748b; }
+        .feedback { margin-top: 20px; padding: 20px; border-radius: 12px; display: none; line-height: 1.6; }
+        .correct { background: #dcfce7; color: #166534; border-left: 8px solid var(--bio); }
+        .wrong { background: #fee2e2; color: #991b1b; border-left: 8px solid var(--chem); }
+        .preview-list { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; border-top: 5px solid; }
         .hidden { display: none; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; transition: 0.2s; }
-        button.opt:hover:not(:disabled) { border-color: #94a3b8; background: #f8fafc; }
-        #feedback { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; border-left: 6px solid; }
-        .correct-ui { border-color: var(--bio); background: #f0fdf4; color: #166534; }
-        .wrong-ui { border-color: var(--chem); background: #fef2f2; color: #991b1b; }
-        .preview-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid; }
-        .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border-radius: 8px; cursor: pointer; }
+        .next-btn { width: 100%; margin-top: 20px; padding: 15px; border: none; background: var(--dark); color: white; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="nav-tabs">
-        <button id="tab-game" class="tab active" onclick="switchTab('game')">🎮 Play Game</button>
-        <button id="tab-preview" class="tab" onclick="switchTab('preview')">👁️ Study Preview</button>
+<div class="app-container">
+    <div class="nav">
+        <button id="btn-game" class="active" onclick="showTab('game')">🎮 TEST YOURSELF</button>
+        <button id="btn-preview" onclick="showTab('preview')">👁️ PREVIEW NOTES</button>
     </div>
 
-    <div id="section-game">
-        <div id="unit-tag" class="unit-banner">Chemistry</div>
-        <div class="content">
-            <div id="q-text" style="font-size: 1.2rem; font-weight: 500;">Ready?</div>
-            <div class="grid" id="options-grid"></div>
-            <div id="feedback"></div>
-            <button class="next-btn" id="next-btn" style="display:none" onclick="loadQuestion()">Next Concept →</button>
+    <div id="game-view">
+        <div id="unit-banner" class="banner" style="background: var(--chem);">CHEMISTRY</div>
+        <div class="main-content">
+            <div id="q-text" class="question-box">Ready to start?</div>
+            <div id="options" class="options-grid"></div>
+            <div id="feedback" class="feedback"></div>
+            <button id="next-btn" class="next-btn" style="display:none" onclick="loadQuestion()">Next Concept →</button>
         </div>
     </div>
 
-    <div id="section-preview" class="hidden">
-        <div class="unit-banner" style="background: var(--dark)">Concept Summary</div>
-        <div class="content" id="preview-list">
-            </div>
+    <div id="preview-view" class="hidden">
+        <div class="banner" style="background: var(--dark);">EXAM CHEAT SHEET</div>
+        <div class="main-content">
+            <div class="preview-list" id="preview-content"></div>
+        </div>
     </div>
 </div>
 
 <script>
-    const quizData = [
+    const examData = [
         {
             unit: "Chemistry", color: "var(--chem)",
-            q: "An atom has 11 protons and 12 neutrons. What is its **Mass Number**?",
-            options: ["11", "12", "23", "1"], correct: "23",
-            explain: "Mass Number = Protons + Neutrons. $11 + 12 = 23$."
+            q: "An atom has 7 protons, 8 neutrons, and 7 electrons. What is its **Mass Number**?",
+            options: ["7", "14", "15", "21"], answer: "15",
+            explain: "Rule: Mass Number = Protons + Neutrons ($7 + 8 = 15$). Protons define the element (Nitrogen), neutrons add mass!"
         },
         {
             unit: "Biology", color: "var(--bio)",
-            q: "During which phase do chromosomes line up in the **middle**?",
-            options: ["Prophase", "Metaphase", "Anaphase", "Telophase"], correct: "Metaphase",
-            explain: "Metaphase = Middle. Spindle fibers align them for separation."
-        },
-        {
-            unit: "Astronomy", color: "var(--astro)",
-            q: "Which property measures a star's **actual** energy output?",
-            options: ["Apparent Magnitude", "Luminosity", "Parallax", "Retrograde"], correct: "Luminosity",
-            explain: "Luminosity is the true power output; Apparent Magnitude is just how it looks from Earth."
+            q: "In which stage of **Mitosis** do the sister chromatids get pulled apart to opposite ends of the cell?",
+            options: ["Prophase", "Metaphase", "Anaphase", "Telophase"], answer: "Anaphase",
+            explain: "Think **A** for **Away**. In Anaphase, the spindle fibers pull the chromatids away from the center."
         },
         {
             unit: "Electricity", color: "var(--elec)",
-            q: "In a **Series** circuit, adding more resistors causes current to...",
-            options: ["Increase", "Decrease", "Stay the same", "Become AC"], correct: "Decrease",
-            explain: "Adding resistors in series increases total resistance ($R$). Since $I = V/R$, current decreases."
+            q: "You have a circuit with a 12V battery and a 3Ω resistor. What is the **Current** ($I$)?",
+            options: ["4A", "36A", "0.25A", "15A"], answer: "4A",
+            explain: "Ohm's Law: $I = V / R$. So, $12 / 3 = 4$ Amps."
+        },
+        {
+            unit: "Astronomy", color: "var(--astro)",
+            q: "On an H-R Diagram, where would you find a star that is **extremely hot but very dim**?",
+            options: ["Main Sequence", "Red Giants", "White Dwarfs", "Supergiants"], answer: "White Dwarfs",
+            explain: "White Dwarfs are in the bottom-left: high temperature (left) but low luminosity (bottom)."
         }
     ];
 
-    let currentIdx = 0;
+    let current = 0;
 
-    function switchTab(mode) {
-        document.getElementById('section-game').classList.toggle('hidden', mode !== 'game');
-        document.getElementById('section-preview').classList.toggle('hidden', mode !== 'preview');
-        document.getElementById('tab-game').classList.toggle('active', mode === 'game');
-        document.getElementById('tab-preview').classList.toggle('active', mode === 'preview');
-        if(mode === 'preview') renderPreview();
+    function showTab(tab) {
+        document.getElementById('game-view').classList.toggle('hidden', tab !== 'game');
+        document.getElementById('preview-view').classList.toggle('hidden', tab !== 'preview');
+        document.getElementById('btn-game').className = (tab === 'game' ? 'active' : '');
+        document.getElementById('btn-preview').className = (tab === 'preview' ? 'active' : '');
+        if(tab === 'preview') renderPreview();
     }
 
     function renderPreview() {
-        const list = document.getElementById('preview-list');
-        list.innerHTML = quizData.map(item => `
-            <div class="preview-card" style="border-left-color: ${item.color}">
-                <strong style="color:${item.color}">${item.unit}</strong><br>
-                <em>Topic:</em> ${item.q}<br>
-                <strong>Key Rule:</strong> ${item.explain}
+        const div = document.getElementById('preview-content');
+        div.innerHTML = examData.map(d => `
+            <div class="card" style="border-top-color:${d.color}">
+                <b style="color:${d.color}">${d.unit.toUpperCase()}</b><br>
+                <small>${d.explain}</small>
             </div>
         `).join('');
     }
 
     function loadQuestion() {
-        if(currentIdx >= quizData.length) {
-            document.getElementById('section-game').innerHTML = "<div class='content'><h2>Review Complete!</h2><button onclick='location.reload()' class='next-btn'>Restart</button></div>";
+        if(current >= examData.length) {
+            document.querySelector('.main-content').innerHTML = "<h2>Exam Prep Complete!</h2><button class='next-btn' onclick='location.reload()'>Restart Study Session</button>";
             return;
         }
-        const data = quizData[currentIdx];
-        document.getElementById('unit-tag').innerText = data.unit;
-        document.getElementById('unit-tag').style.background = data.color;
+        const data = examData[current];
+        document.getElementById('unit-banner').innerText = data.unit;
+        document.getElementById('unit-banner').style.background = data.color;
         document.getElementById('q-text').innerHTML = data.q;
-        const grid = document.getElementById('options-grid');
-        grid.innerHTML = '';
-        data.options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'opt';
-            btn.innerText = opt;
-            btn.onclick = () => {
-                document.getElementById('feedback').style.display = 'block';
-                document.getElementById('feedback').className = (opt === data.correct) ? 'correct-ui' : 'wrong-ui';
-                document.getElementById('feedback').innerHTML = (opt === data.correct ? "✅ Correct! " : "❌ Incorrect. ") + data.explain;
+        const opts = document.getElementById('options');
+        opts.innerHTML = '';
+        data.options.forEach(o => {
+            const b = document.createElement('button');
+            b.className = 'btn-opt';
+            b.innerText = o;
+            b.onclick = () => {
+                const fb = document.getElementById('feedback');
+                fb.style.display = 'block';
+                fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
+                fb.innerHTML = `<strong>${o === data.answer ? 'Nice!' : 'Check your notes:'}</strong><br>${data.explain}`;
                 document.getElementById('next-btn').style.display = 'block';
-                document.querySelectorAll('.opt').forEach(b => b.disabled = true);
-                currentIdx++;
+                document.querySelectorAll('.btn-opt').forEach(btn => btn.disabled = true);
+                current++;
             };
-            grid.appendChild(btn);
+            opts.appendChild(b);
         });
         document.getElementById('feedback').style.display = 'none';
         document.getElementById('next-btn').style.display = 'none';
