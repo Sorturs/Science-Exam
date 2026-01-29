@@ -3,82 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 9 Science Exam: The Four Pillars</title>
+    <title>Grade 9 Science: Visual Exam Prep</title>
     <style>
         :root {
             --chem: #ef4444; --bio: #22c55e; --astro: #6366f1; --elec: #f59e0b; --dark: #0f172a;
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #e2e8f0; margin: 0; display: flex; justify-content: center; padding: 20px; }
-        .app-container { width: 100%; max-width: 900px; background: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden; }
-        .nav { display: flex; background: #1e293b; padding: 10px; gap: 10px; }
-        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; color: white; background: rgba(255,255,255,0.1); }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; padding: 20px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .nav { display: flex; background: #1e293b; }
+        .nav button { flex: 1; padding: 15px; border: none; color: white; background: none; cursor: pointer; font-weight: bold; }
         .nav button.active { background: white; color: var(--dark); }
-        .banner { padding: 15px; text-align: center; font-weight: 800; color: white; letter-spacing: 2px; }
-        .main-content { padding: 30px; min-height: 450px; }
-        .question-box { font-size: 1.4rem; font-weight: 600; margin-bottom: 25px; line-height: 1.4; color: var(--dark); }
-        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .btn-opt { padding: 20px; border: 2px solid #cbd5e1; border-radius: 12px; background: white; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; }
-        .btn-opt:hover { background: #f1f5f9; border-color: #64748b; }
-        .feedback { margin-top: 20px; padding: 20px; border-radius: 12px; display: none; line-height: 1.6; }
-        .correct { background: #dcfce7; color: #166534; border-left: 8px solid var(--bio); }
-        .wrong { background: #fee2e2; color: #991b1b; border-left: 8px solid var(--chem); }
-        .preview-list { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; border-top: 5px solid; }
+        .banner { padding: 10px; text-align: center; color: white; font-weight: 800; font-size: 0.9rem; }
+        .content { padding: 25px; }
+        
+        /* Visual Card Style */
+        .element-card { 
+            background: #fff; border: 3px solid var(--dark); width: 120px; height: 150px; 
+            margin: 0 auto 20px; border-radius: 8px; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; position: relative;
+        }
+        .atomic-num { position: absolute; top: 5px; left: 8px; font-weight: bold; }
+        .symbol { font-size: 2.5rem; font-weight: 900; }
+        .mass { font-weight: bold; margin-top: 5px; }
+        .family-tag { font-size: 0.7rem; background: #eee; padding: 2px 6px; border-radius: 4px; margin-top: 5px; }
+
+        .question { font-size: 1.2rem; margin-bottom: 20px; font-weight: 600; text-align: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-size: 1rem; }
+        button.opt:hover { border-color: #94a3b8; }
+        .feedback { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; line-height: 1.5; }
+        .correct { background: #dcfce7; color: #166534; border-left: 5px solid var(--bio); }
+        .wrong { background: #fee2e2; color: #991b1b; border-left: 5px solid var(--chem); }
+        .next-btn { width: 100%; margin-top: 15px; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 6px; cursor: pointer; display: none; }
         .hidden { display: none; }
-        .next-btn { width: 100%; margin-top: 20px; padding: 15px; border: none; background: var(--dark); color: white; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="nav">
-        <button id="btn-game" class="active" onclick="showTab('game')">🎮 TEST YOURSELF</button>
-        <button id="btn-preview" onclick="showTab('preview')">👁️ PREVIEW NOTES</button>
+        <button id="btn-game" class="active" onclick="showTab('game')">GAME MODE</button>
+        <button id="btn-preview" onclick="showTab('preview')">PREVIEW NOTES</button>
     </div>
 
     <div id="game-view">
         <div id="unit-banner" class="banner" style="background: var(--chem);">CHEMISTRY</div>
-        <div class="main-content">
-            <div id="q-text" class="question-box">Ready to start?</div>
-            <div id="options" class="options-grid"></div>
+        <div class="content">
+            <div id="visual-area"></div>
+            <div id="q-text" class="question">Ready?</div>
+            <div id="options" class="grid"></div>
             <div id="feedback" class="feedback"></div>
-            <button id="next-btn" class="next-btn" style="display:none" onclick="loadQuestion()">Next Concept →</button>
+            <button id="next-btn" class="next-btn" onclick="loadQuestion()">Next Question →</button>
         </div>
     </div>
 
     <div id="preview-view" class="hidden">
-        <div class="banner" style="background: var(--dark);">EXAM CHEAT SHEET</div>
-        <div class="main-content">
-            <div class="preview-list" id="preview-content"></div>
-        </div>
+        <div class="banner" style="background: var(--dark);">STUDY GUIDE</div>
+        <div class="content" id="preview-list"></div>
     </div>
 </div>
 
 <script>
     const examData = [
         {
-            unit: "Chemistry", color: "var(--chem)",
-            q: "An atom has 7 protons, 8 neutrons, and 7 electrons. What is its **Mass Number**?",
-            options: ["7", "14", "15", "21"], answer: "15",
-            explain: "Rule: Mass Number = Protons + Neutrons ($7 + 8 = 15$). Protons define the element (Nitrogen), neutrons add mass!"
+            unit: "Chemistry", color: "var(--chem)", type: "element",
+            symbol: "F", name: "Fluorine", num: 9, mass: 19, group: "17 (Halogens)", period: "2",
+            q: "Looking at the card, how many **Neutrons** are in this atom of Fluorine?",
+            options: ["9", "10", "19", "28"], answer: "10",
+            explain: "Rule: Neutrons = Mass Number - Atomic Number. ($19 - 9 = 10$)."
         },
         {
-            unit: "Biology", color: "var(--bio)",
-            q: "In which stage of **Mitosis** do the sister chromatids get pulled apart to opposite ends of the cell?",
-            options: ["Prophase", "Metaphase", "Anaphase", "Telophase"], answer: "Anaphase",
-            explain: "Think **A** for **Away**. In Anaphase, the spindle fibers pull the chromatids away from the center."
+            unit: "Chemistry", color: "var(--chem)", type: "element",
+            symbol: "Mg", name: "Magnesium", num: 12, mass: 24, group: "2 (Alkaline Earth)", period: "3",
+            q: "Which 'Family' or Group does this element belong to?",
+            options: ["Alkali Metals", "Alkaline Earth Metals", "Halogens", "Noble Gases"], answer: "Alkaline Earth Metals",
+            explain: "Magnesium is in Group 2, known as the **Alkaline Earth Metals**."
         },
         {
-            unit: "Electricity", color: "var(--elec)",
-            q: "You have a circuit with a 12V battery and a 3Ω resistor. What is the **Current** ($I$)?",
-            options: ["4A", "36A", "0.25A", "15A"], answer: "4A",
-            explain: "Ohm's Law: $I = V / R$. So, $12 / 3 = 4$ Amps."
+            unit: "Biology", color: "var(--bio)", type: "text",
+            q: "During **Metaphase**, where do the chromosomes go?",
+            options: ["Opposite poles", "The middle", "Dissolve", "Nuclear membrane"], answer: "The middle",
+            explain: "Metaphase = **M**iddle. They line up on the equator of the cell."
         },
         {
-            unit: "Astronomy", color: "var(--astro)",
-            q: "On an H-R Diagram, where would you find a star that is **extremely hot but very dim**?",
-            options: ["Main Sequence", "Red Giants", "White Dwarfs", "Supergiants"], answer: "White Dwarfs",
-            explain: "White Dwarfs are in the bottom-left: high temperature (left) but low luminosity (bottom)."
+            unit: "Electricity", color: "var(--elec)", type: "text",
+            q: "A circuit has 10V and 5Ω resistance. What is the current ($I$)?",
+            options: ["2A", "50A", "0.5A", "15A"], answer: "2A",
+            explain: "Ohm's Law: $I = V / R$. So, $10 / 5 = 2$ Amps."
         }
     ];
 
@@ -93,10 +104,10 @@
     }
 
     function renderPreview() {
-        const div = document.getElementById('preview-content');
-        div.innerHTML = examData.map(d => `
-            <div class="card" style="border-top-color:${d.color}">
-                <b style="color:${d.color}">${d.unit.toUpperCase()}</b><br>
+        const list = document.getElementById('preview-list');
+        list.innerHTML = examData.filter(d => d.type === 'element').map(d => `
+            <div style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <b>${d.name} (${d.symbol}):</b> Mass ${d.mass}, Group ${d.group}.<br>
                 <small>${d.explain}</small>
             </div>
         `).join('');
@@ -104,26 +115,40 @@
 
     function loadQuestion() {
         if(current >= examData.length) {
-            document.querySelector('.main-content').innerHTML = "<h2>Exam Prep Complete!</h2><button class='next-btn' onclick='location.reload()'>Restart Study Session</button>";
+            document.querySelector('.content').innerHTML = "<h2>Session Complete!</h2><button onclick='location.reload()' class='next-btn' style='display:block'>Restart</button>";
             return;
         }
-        const data = examData[current];
-        document.getElementById('unit-banner').innerText = data.unit;
-        document.getElementById('unit-banner').style.background = data.color;
-        document.getElementById('q-text').innerHTML = data.q;
+        const d = examData[current];
+        document.getElementById('unit-banner').innerText = d.unit.toUpperCase();
+        document.getElementById('unit-banner').style.background = d.color;
+        document.getElementById('q-text').innerText = d.q;
+        
+        const visual = document.getElementById('visual-area');
+        if(d.type === 'element') {
+            visual.innerHTML = `
+                <div class="element-card" style="border-color:${d.color}">
+                    <div class="atomic-num">${d.num}</div>
+                    <div class="symbol">${d.symbol}</div>
+                    <div class="mass">${d.mass}</div>
+                    <div class="family-tag">Row: ${d.period}</div>
+                </div>`;
+        } else {
+            visual.innerHTML = "";
+        }
+
         const opts = document.getElementById('options');
         opts.innerHTML = '';
-        data.options.forEach(o => {
+        d.options.forEach(o => {
             const b = document.createElement('button');
-            b.className = 'btn-opt';
+            b.className = 'opt';
             b.innerText = o;
             b.onclick = () => {
                 const fb = document.getElementById('feedback');
                 fb.style.display = 'block';
-                fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
-                fb.innerHTML = `<strong>${o === data.answer ? 'Nice!' : 'Check your notes:'}</strong><br>${data.explain}`;
+                fb.className = 'feedback ' + (o === d.answer ? 'correct' : 'wrong');
+                fb.innerHTML = `<strong>${o === d.answer ? 'Correct!' : 'Incorrect.'}</strong> ${d.explain}`;
                 document.getElementById('next-btn').style.display = 'block';
-                document.querySelectorAll('.btn-opt').forEach(btn => btn.disabled = true);
+                document.querySelectorAll('.opt').forEach(btn => btn.disabled = true);
                 current++;
             };
             opts.appendChild(b);
