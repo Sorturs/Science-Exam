@@ -2,162 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 9 Science: Visual Exam Prep</title>
+    <title>Science Exam Master: Step-by-Step</title>
     <style>
-        :root {
-            --chem: #ef4444; --bio: #22c55e; --astro: #6366f1; --elec: #f59e0b; --dark: #0f172a;
-        }
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; padding: 20px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 800px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        .nav { display: flex; background: #1e293b; }
-        .nav button { flex: 1; padding: 15px; border: none; color: white; background: none; cursor: pointer; font-weight: bold; }
-        .nav button.active { background: white; color: var(--dark); }
-        .banner { padding: 10px; text-align: center; color: white; font-weight: 800; font-size: 0.9rem; }
-        .content { padding: 25px; }
-        
-        /* Visual Card Style */
-        .element-card { 
-            background: #fff; border: 3px solid var(--dark); width: 120px; height: 150px; 
-            margin: 0 auto 20px; border-radius: 8px; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; position: relative;
-        }
-        .atomic-num { position: absolute; top: 5px; left: 8px; font-weight: bold; }
-        .symbol { font-size: 2.5rem; font-weight: 900; }
-        .mass { font-weight: bold; margin-top: 5px; }
-        .family-tag { font-size: 0.7rem; background: #eee; padding: 2px 6px; border-radius: 4px; margin-top: 5px; }
-
-        .question { font-size: 1.2rem; margin-bottom: 20px; font-weight: 600; text-align: center; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; background: white; cursor: pointer; font-size: 1rem; }
-        button.opt:hover { border-color: #94a3b8; }
-        .feedback { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; line-height: 1.5; }
-        .correct { background: #dcfce7; color: #166534; border-left: 5px solid var(--bio); }
-        .wrong { background: #fee2e2; color: #991b1b; border-left: 5px solid var(--chem); }
-        .next-btn { width: 100%; margin-top: 15px; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 6px; cursor: pointer; display: none; }
-        .hidden { display: none; }
+        :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background: #cbd5e1; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 850px; background: white; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; }
+        .header { padding: 20px; text-align: center; color: white; font-weight: 800; font-size: 1.5rem; letter-spacing: 1px; }
+        .content { padding: 40px; }
+        .visual-box { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 25px; padding: 25px; font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 1.5; }
+        .q-text { font-size: 1.4rem; margin-bottom: 30px; font-weight: 700; color: #1e293b; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        button.opt { padding: 18px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; cursor: pointer; font-size: 1.1rem; transition: 0.3s; font-weight: 500; }
+        button.opt:hover:not(:disabled) { border-color: var(--dark); background: #f1f5f9; transform: translateY(-2px); }
+        .feedback { margin-top: 25px; padding: 25px; border-radius: 15px; display: none; line-height: 1.7; border-left: 12px solid; font-size: 1.05rem; }
+        .correct { background: #f0fdf4; color: #14532d; border-color: #22c55e; }
+        .wrong { background: #fef2f2; color: #7f1d1d; border-color: #ef4444; }
+        .next-btn { width: 100%; margin-top: 25px; padding: 20px; background: var(--dark); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: none; }
+        .step-box { background: rgba(255,255,255,0.5); padding: 10px; margin-top: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="nav">
-        <button id="btn-game" class="active" onclick="showTab('game')">GAME MODE</button>
-        <button id="btn-preview" onclick="showTab('preview')">PREVIEW NOTES</button>
-    </div>
-
-    <div id="game-view">
-        <div id="unit-banner" class="banner" style="background: var(--chem);">CHEMISTRY</div>
-        <div class="content">
-            <div id="visual-area"></div>
-            <div id="q-text" class="question">Ready?</div>
-            <div id="options" class="grid"></div>
-            <div id="feedback" class="feedback"></div>
-            <button id="next-btn" class="next-btn" onclick="loadQuestion()">Next Question →</button>
-        </div>
-    </div>
-
-    <div id="preview-view" class="hidden">
-        <div class="banner" style="background: var(--dark);">STUDY GUIDE</div>
-        <div class="content" id="preview-list"></div>
+<div class="container">
+    <div id="unit-banner" class="header">EXAM READY</div>
+    <div class="content">
+        <div id="visual" class="visual-box"></div>
+        <div id="question" class="q-text"></div>
+        <div id="options" class="grid"></div>
+        <div id="feedback" class="feedback"></div>
+        <button id="next-btn" class="next-btn" onclick="generateQuestion()">Next Concept →</button>
     </div>
 </div>
 
 <script>
-    const examData = [
-        {
-            unit: "Chemistry", color: "var(--chem)", type: "element",
-            symbol: "F", name: "Fluorine", num: 9, mass: 19, group: "17 (Halogens)", period: "2",
-            q: "Looking at the card, how many **Neutrons** are in this atom of Fluorine?",
-            options: ["9", "10", "19", "28"], answer: "10",
-            explain: "Rule: Neutrons = Mass Number - Atomic Number. ($19 - 9 = 10$)."
+    const generators = [
+        // CHEMISTRY: Density Logic
+        () => {
+            const m = Math.floor(Math.random() * 200) + 100;
+            const v = Math.floor(Math.random() * 20) + 5;
+            const density = (m / v).toFixed(1);
+            return {
+                unit: "Chemistry", color: "var(--chem)",
+                visual: `LAB DATA:\nObject Mass: ${m}g\nObject Volume: ${v}mL`,
+                q: "Based on your Density Lab, calculate the density of this sample.",
+                options: [density + " g/mL", (m+v).toFixed(1) + " g/mL", (v/m).toFixed(2) + " g/mL", "1.0 g/mL"],
+                answer: density + " g/mL",
+                explain: `<strong>How to solve:</strong><br>
+                          1. Identify your variables: Mass (m) = ${m}g, Volume (V) = ${v}mL.<br>
+                          2. Use the formula: <b>D = m / V</b>.<br>
+                          3. Plug in the numbers: ${m} ÷ ${v}.<br>
+                          4. Final Answer: ${density} g/mL. (Remember: Density is how much 'stuff' is packed into a space!)`
+            };
         },
-        {
-            unit: "Chemistry", color: "var(--chem)", type: "element",
-            symbol: "Mg", name: "Magnesium", num: 12, mass: 24, group: "2 (Alkaline Earth)", period: "3",
-            q: "Which 'Family' or Group does this element belong to?",
-            options: ["Alkali Metals", "Alkaline Earth Metals", "Halogens", "Noble Gases"], answer: "Alkaline Earth Metals",
-            explain: "Magnesium is in Group 2, known as the **Alkaline Earth Metals**."
+        // ELECTRICITY: Current Flow
+        () => {
+            const v = [6, 9, 12, 24][Math.floor(Math.random()*4)];
+            const r = [2, 3, 4, 6][Math.floor(Math.random()*4)];
+            const current = (v / r);
+            return {
+                unit: "Electricity", color: "var(--elec)",
+                visual: `CIRCUIT SPECS:\nBattery: ${v} Volts\nResistor: ${r} Ohms (Ω)`,
+                q: "Calculate the Current (I) through the resistor.",
+                options: [current + "A", (v*r) + "A", "0.5A", (v+r) + "A"],
+                answer: current + "A",
+                explain: `<strong>How to solve:</strong><br>
+                          1. Use the Ohm's Law Triangle. To find Current (I), you cover 'I' and see <b>V / R</b>.<br>
+                          2. Calculation: ${v}V ÷ ${r}Ω = ${current} Amps.<br>
+                          3. Rule: If resistance goes UP, current goes DOWN. If voltage goes UP, current goes UP!`
+            };
         },
-        {
-            unit: "Biology", color: "var(--bio)", type: "text",
-            q: "During **Metaphase**, where do the chromosomes go?",
-            options: ["Opposite poles", "The middle", "Dissolve", "Nuclear membrane"], answer: "The middle",
-            explain: "Metaphase = **M**iddle. They line up on the equator of the cell."
+        // ECOLOGY: Bioaccumulation (DDT Case Study)
+        () => {
+            return {
+                unit: "Ecology", color: "var(--eco)",
+                visual: `ECOSYSTEM LEVELS:\n[ Algae ] -> [ Small Fish ] -> [ Large Fish ] -> [ Osprey (Bird) ]`,
+                q: "If DDT (a toxin) enters this water, which level will have the HIGHEST concentration?",
+                options: ["Algae", "Small Fish", "Large Fish", "Osprey"],
+                answer: "Osprey",
+                explain: `<strong>How to solve:</strong><br>
+                          1. Remember the rule of <b>Bioaccumulation/Biomagnification</b>.<br>
+                          2. Toxins cannot be digested, so they stay in the body.<br>
+                          3. As you move UP the food chain, the top predator eats thousands of the lower organisms, collecting ALL their toxins.<br>
+                          4. <b>Result:</b> The organism at the very TOP always has the highest concentration.`
+            };
         },
-        {
-            unit: "Electricity", color: "var(--elec)", type: "text",
-            q: "A circuit has 10V and 5Ω resistance. What is the current ($I$)?",
-            options: ["2A", "50A", "0.5A", "15A"], answer: "2A",
-            explain: "Ohm's Law: $I = V / R$. So, $10 / 5 = 2$ Amps."
+        // ASTRONOMY: Celestial Motion
+        () => {
+            return {
+                unit: "Astronomy", color: "var(--space)",
+                visual: `ALIGNMENT:\n[ Sun ] ------ [ Moon ] ------ [ Earth ]`,
+                q: "What event is occurring in this specific alignment?",
+                options: ["Solar Eclipse", "Lunar Eclipse", "Full Moon", "Summer Solstice"],
+                answer: "Solar Eclipse",
+                explain: `<strong>How to solve:</strong><br>
+                          1. Look at who is in the MIDDLE. Here, the <b>Moon</b> is in the middle.<br>
+                          2. The Moon is blocking the Sun's light from hitting Earth.<br>
+                          3. If the Sun is blocked = <b>Solar</b> Eclipse.<br>
+                          4. (If Earth were in the middle, it would be a Lunar Eclipse).`
+            };
         }
     ];
 
-    let current = 0;
-
-    function showTab(tab) {
-        document.getElementById('game-view').classList.toggle('hidden', tab !== 'game');
-        document.getElementById('preview-view').classList.toggle('hidden', tab !== 'preview');
-        document.getElementById('btn-game').className = (tab === 'game' ? 'active' : '');
-        document.getElementById('btn-preview').className = (tab === 'preview' ? 'active' : '');
-        if(tab === 'preview') renderPreview();
-    }
-
-    function renderPreview() {
-        const list = document.getElementById('preview-list');
-        list.innerHTML = examData.filter(d => d.type === 'element').map(d => `
-            <div style="border-bottom: 1px solid #ddd; padding: 10px 0;">
-                <b>${d.name} (${d.symbol}):</b> Mass ${d.mass}, Group ${d.group}.<br>
-                <small>${d.explain}</small>
-            </div>
-        `).join('');
-    }
-
-    function loadQuestion() {
-        if(current >= examData.length) {
-            document.querySelector('.content').innerHTML = "<h2>Session Complete!</h2><button onclick='location.reload()' class='next-btn' style='display:block'>Restart</button>";
-            return;
-        }
-        const d = examData[current];
-        document.getElementById('unit-banner').innerText = d.unit.toUpperCase();
-        document.getElementById('unit-banner').style.background = d.color;
-        document.getElementById('q-text').innerText = d.q;
-        
-        const visual = document.getElementById('visual-area');
-        if(d.type === 'element') {
-            visual.innerHTML = `
-                <div class="element-card" style="border-color:${d.color}">
-                    <div class="atomic-num">${d.num}</div>
-                    <div class="symbol">${d.symbol}</div>
-                    <div class="mass">${d.mass}</div>
-                    <div class="family-tag">Row: ${d.period}</div>
-                </div>`;
-        } else {
-            visual.innerHTML = "";
-        }
-
+    function generateQuestion() {
+        const gen = generators[Math.floor(Math.random() * generators.length)];
+        const data = gen();
+        document.getElementById('unit-banner').innerText = data.unit.toUpperCase();
+        document.getElementById('unit-banner').style.background = data.color;
+        document.getElementById('visual').innerHTML = data.visual.replace(/\n/g, '<br>');
+        document.getElementById('question').innerText = data.q;
         const opts = document.getElementById('options');
         opts.innerHTML = '';
-        d.options.forEach(o => {
+        data.options.sort(() => Math.random() - 0.5).forEach(o => {
             const b = document.createElement('button');
             b.className = 'opt';
             b.innerText = o;
             b.onclick = () => {
                 const fb = document.getElementById('feedback');
                 fb.style.display = 'block';
-                fb.className = 'feedback ' + (o === d.answer ? 'correct' : 'wrong');
-                fb.innerHTML = `<strong>${o === d.answer ? 'Correct!' : 'Incorrect.'}</strong> ${d.explain}`;
+                fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
+                fb.innerHTML = `<strong>${o === data.answer ? '✅ SUCCESS' : '❌ LEARN THE PROCESS'}</strong><br><div class="step-box">${data.explain}</div>`;
                 document.getElementById('next-btn').style.display = 'block';
                 document.querySelectorAll('.opt').forEach(btn => btn.disabled = true);
-                current++;
             };
             opts.appendChild(b);
         });
         document.getElementById('feedback').style.display = 'none';
         document.getElementById('next-btn').style.display = 'none';
     }
-
-    loadQuestion();
+    generateQuestion();
 </script>
 </body>
 </html>
