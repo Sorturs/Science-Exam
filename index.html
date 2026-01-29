@@ -2,113 +2,155 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Science Exam Master: Step-by-Step</title>
+    <title>Grade 9 Science: Final Mastery App</title>
     <style>
-        :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; }
-        body { font-family: 'Inter', sans-serif; background: #cbd5e1; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 850px; background: white; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; }
-        .header { padding: 20px; text-align: center; color: white; font-weight: 800; font-size: 1.5rem; letter-spacing: 1px; }
-        .content { padding: 40px; }
-        .visual-box { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 25px; padding: 25px; font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 1.5; }
-        .q-text { font-size: 1.4rem; margin-bottom: 30px; font-weight: 700; color: #1e293b; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        button.opt { padding: 18px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; cursor: pointer; font-size: 1.1rem; transition: 0.3s; font-weight: 500; }
-        button.opt:hover:not(:disabled) { border-color: var(--dark); background: #f1f5f9; transform: translateY(-2px); }
-        .feedback { margin-top: 25px; padding: 25px; border-radius: 15px; display: none; line-height: 1.7; border-left: 12px solid; font-size: 1.05rem; }
-        .correct { background: #f0fdf4; color: #14532d; border-color: #22c55e; }
-        .wrong { background: #fef2f2; color: #7f1d1d; border-color: #ef4444; }
-        .next-btn { width: 100%; margin-top: 25px; padding: 20px; background: var(--dark); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: none; }
-        .step-box { background: rgba(255,255,255,0.5); padding: 10px; margin-top: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); }
+        :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; --bg: #f1f5f9; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        
+        /* Navigation */
+        .nav { display: flex; background: #1e293b; padding: 5px; }
+        .nav button { flex: 1; padding: 15px; border: none; color: white; background: none; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; border-radius: 10px; }
+        .nav button.active { background: white; color: var(--dark); }
+
+        .content { padding: 30px; min-height: 500px; }
+        .hidden { display: none; }
+
+        /* Cheat Sheet Styles */
+        .cheat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .cheat-card { border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+        .cheat-header { padding: 10px; color: white; font-weight: bold; text-align: center; }
+        .cheat-body { padding: 15px; font-size: 0.9rem; line-height: 1.4; }
+        .formula { background: #f8fafc; padding: 5px; border-radius: 4px; font-family: monospace; font-weight: bold; display: block; margin: 5px 0; }
+
+        /* Game Styles */
+        .visual-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center; font-family: monospace; white-space: pre-wrap; }
+        .q-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-weight: 500; transition: 0.2s; }
+        button.opt:hover { border-color: var(--dark); background: #f8fafc; }
+        .feedback { margin-top: 20px; padding: 20px; border-radius: 12px; display: none; border-left: 10px solid; }
+        .correct { background: #dcfce7; border-color: var(--eco); color: #166534; }
+        .wrong { background: #fee2e2; border-color: var(--chem); color: #991b1b; }
+        .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="unit-banner" class="header">EXAM READY</div>
-    <div class="content">
-        <div id="visual" class="visual-box"></div>
-        <div id="question" class="q-text"></div>
-        <div id="options" class="grid"></div>
-        <div id="feedback" class="feedback"></div>
-        <button id="next-btn" class="next-btn" onclick="generateQuestion()">Next Concept →</button>
+    <div class="nav">
+        <button id="tab-game" class="active" onclick="switchTab('game')">🎮 PRACTICE GAME</button>
+        <button id="tab-cheat" onclick="switchTab('cheat')">📜 EXAM CHEAT SHEET</button>
+    </div>
+
+    <div id="section-game">
+        <div id="unit-banner" style="padding: 10px; text-align: center; color: white; font-weight: bold;">CHEMISTRY</div>
+        <div class="content">
+            <div id="visual" class="visual-box"></div>
+            <div id="question" class="q-text"></div>
+            <div id="options" class="options-grid"></div>
+            <div id="feedback" class="feedback"></div>
+            <button id="next-btn" class="next-btn" onclick="generateQuestion()">Next Random Question →</button>
+        </div>
+    </div>
+
+    <div id="section-cheat" class="hidden">
+        <div class="content">
+            <div class="cheat-grid">
+                <div class="cheat-card">
+                    <div class="cheat-header" style="background: var(--chem)">CHEMISTRY</div>
+                    <div class="cheat-body">
+                        <b>Density Formula:</b> <span class="formula">D = m / V</span>
+                        <b>Atom Parts:</b> Protons (+) & Neutrons (0) in nucleus. Electrons (-) in shells.
+                        <b>Bohr-Rutherford:</b> Shell 1 holds 2. Shell 2 holds 8.
+                        <b>Physical Change:</b> No new substance (Ice melting).
+                        <b>Chemical Change:</b> New substance (Rusting).
+                    </div>
+                </div>
+                <div class="cheat-card">
+                    <div class="cheat-header" style="background: var(--elec)">ELECTRICITY</div>
+                    <div class="cheat-body">
+                        <b>Ohm's Law:</b> <span class="formula">V = I x R</span>
+                        <b>I (Current):</b> Amps (Flow) <br>
+                        <b>V (Voltage):</b> Volts (Pressure) <br>
+                        <b>R (Resistance):</b> Ohms (Friction) <br>
+                        <b>Series:</b> One loop. <b>Parallel:</b> Many loops.
+                    </div>
+                </div>
+                <div class="cheat-card">
+                    <div class="cheat-header" style="background: var(--eco)">ECOLOGY</div>
+                    <div class="cheat-body">
+                        <b>Bioaccumulation:</b> Toxins build up in one animal.
+                        <b>Biomagnification:</b> Toxins get <i>higher</i> as you go up the food web.
+                        <b>PMAT (Mitosis):</b> Prophase, Metaphase (Middle), Anaphase (Away), Telophase (Two).
+                    </div>
+                </div>
+                <div class="cheat-card">
+                    <div class="cheat-header" style="background: var(--space)">ASTRONOMY</div>
+                    <div class="cheat-body">
+                        <b>Solar Eclipse:</b> Moon is in the middle (blocks Sun).
+                        <b>Lunar Eclipse:</b> Earth is in the middle (shadow on Moon).
+                        <b>Planets:</b> Inner = Terrestrial/Rocky. Outer = Gas Giants.
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
     const generators = [
-        // CHEMISTRY: Density Logic
         () => {
-            const m = Math.floor(Math.random() * 200) + 100;
+            const m = Math.floor(Math.random() * 150) + 50;
             const v = Math.floor(Math.random() * 20) + 5;
-            const density = (m / v).toFixed(1);
+            const d = (m/v).toFixed(1);
             return {
                 unit: "Chemistry", color: "var(--chem)",
-                visual: `LAB DATA:\nObject Mass: ${m}g\nObject Volume: ${v}mL`,
-                q: "Based on your Density Lab, calculate the density of this sample.",
-                options: [density + " g/mL", (m+v).toFixed(1) + " g/mL", (v/m).toFixed(2) + " g/mL", "1.0 g/mL"],
-                answer: density + " g/mL",
-                explain: `<strong>How to solve:</strong><br>
-                          1. Identify your variables: Mass (m) = ${m}g, Volume (V) = ${v}mL.<br>
-                          2. Use the formula: <b>D = m / V</b>.<br>
-                          3. Plug in the numbers: ${m} ÷ ${v}.<br>
-                          4. Final Answer: ${density} g/mL. (Remember: Density is how much 'stuff' is packed into a space!)`
+                visual: `OBJECT SCAN:\nMass: ${m}g\nVolume: ${v}mL`,
+                q: "What is the density of this object?",
+                options: [d + " g/mL", (m*v).toFixed(0) + " g/mL", (v/m).toFixed(2) + " g/mL", "1.0 g/mL"],
+                answer: d + " g/mL",
+                explain: `Step 1: Get the formula (D=m/V). Step 2: Divide mass (${m}) by volume (${v}). Result: ${d}.`
             };
         },
-        // ELECTRICITY: Current Flow
         () => {
-            const v = [6, 9, 12, 24][Math.floor(Math.random()*4)];
-            const r = [2, 3, 4, 6][Math.floor(Math.random()*4)];
-            const current = (v / r);
+            const v = [6, 12, 24][Math.floor(Math.random()*3)];
+            const r = [2, 3, 4][Math.floor(Math.random()*3)];
+            const i = v / r;
             return {
                 unit: "Electricity", color: "var(--elec)",
-                visual: `CIRCUIT SPECS:\nBattery: ${v} Volts\nResistor: ${r} Ohms (Ω)`,
-                q: "Calculate the Current (I) through the resistor.",
-                options: [current + "A", (v*r) + "A", "0.5A", (v+r) + "A"],
-                answer: current + "A",
-                explain: `<strong>How to solve:</strong><br>
-                          1. Use the Ohm's Law Triangle. To find Current (I), you cover 'I' and see <b>V / R</b>.<br>
-                          2. Calculation: ${v}V ÷ ${r}Ω = ${current} Amps.<br>
-                          3. Rule: If resistance goes UP, current goes DOWN. If voltage goes UP, current goes UP!`
+                visual: `CIRCUIT SETTINGS:\nVoltage: ${v}V\nResistance: ${r}Ω`,
+                q: "Calculate the Current (I) in Amps.",
+                options: [i + "A", (v*r) + "A", (r/v).toFixed(2) + "A", "0A"],
+                answer: i + "A",
+                explain: `Use I = V / R. Divide your Voltage (${v}) by Resistance (${r}) to get ${i} Amps.`
             };
         },
-        // ECOLOGY: Bioaccumulation (DDT Case Study)
         () => {
             return {
                 unit: "Ecology", color: "var(--eco)",
-                visual: `ECOSYSTEM LEVELS:\n[ Algae ] -> [ Small Fish ] -> [ Large Fish ] -> [ Osprey (Bird) ]`,
-                q: "If DDT (a toxin) enters this water, which level will have the HIGHEST concentration?",
-                options: ["Algae", "Small Fish", "Large Fish", "Osprey"],
-                answer: "Osprey",
-                explain: `<strong>How to solve:</strong><br>
-                          1. Remember the rule of <b>Bioaccumulation/Biomagnification</b>.<br>
-                          2. Toxins cannot be digested, so they stay in the body.<br>
-                          3. As you move UP the food chain, the top predator eats thousands of the lower organisms, collecting ALL their toxins.<br>
-                          4. <b>Result:</b> The organism at the very TOP always has the highest concentration.`
-            };
-        },
-        // ASTRONOMY: Celestial Motion
-        () => {
-            return {
-                unit: "Astronomy", color: "var(--space)",
-                visual: `ALIGNMENT:\n[ Sun ] ------ [ Moon ] ------ [ Earth ]`,
-                q: "What event is occurring in this specific alignment?",
-                options: ["Solar Eclipse", "Lunar Eclipse", "Full Moon", "Summer Solstice"],
-                answer: "Solar Eclipse",
-                explain: `<strong>How to solve:</strong><br>
-                          1. Look at who is in the MIDDLE. Here, the <b>Moon</b> is in the middle.<br>
-                          2. The Moon is blocking the Sun's light from hitting Earth.<br>
-                          3. If the Sun is blocked = <b>Solar</b> Eclipse.<br>
-                          4. (If Earth were in the middle, it would be a Lunar Eclipse).`
+                visual: `FOOD WEB DATA:\n[Algae] -> [Bug] -> [Frog] -> [Heron]`,
+                q: "Which organism suffers most from Biomagnification of DDT?",
+                options: ["Algae", "Bug", "Frog", "Heron"],
+                answer: "Heron",
+                explain: `Rule: Toxins increase in concentration as you move UP. The Heron is the top predator.`
             };
         }
     ];
 
+    function switchTab(tab) {
+        document.getElementById('section-game').classList.toggle('hidden', tab !== 'game');
+        document.getElementById('section-cheat').classList.toggle('hidden', tab !== 'cheat');
+        document.getElementById('tab-game').classList.toggle('active', tab === 'game');
+        document.getElementById('tab-cheat').classList.toggle('active', tab === 'cheat');
+    }
+
     function generateQuestion() {
         const gen = generators[Math.floor(Math.random() * generators.length)];
         const data = gen();
-        document.getElementById('unit-banner').innerText = data.unit.toUpperCase();
+        document.getElementById('unit-banner').innerText = data.unit;
         document.getElementById('unit-banner').style.background = data.color;
-        document.getElementById('visual').innerHTML = data.visual.replace(/\n/g, '<br>');
+        document.getElementById('visual').innerText = data.visual;
         document.getElementById('question').innerText = data.q;
         const opts = document.getElementById('options');
         opts.innerHTML = '';
@@ -120,7 +162,7 @@
                 const fb = document.getElementById('feedback');
                 fb.style.display = 'block';
                 fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
-                fb.innerHTML = `<strong>${o === data.answer ? '✅ SUCCESS' : '❌ LEARN THE PROCESS'}</strong><br><div class="step-box">${data.explain}</div>`;
+                fb.innerHTML = `<b>${o === data.answer ? '✅ Correct' : '❌ Study Tip'}</b><br>${data.explain}`;
                 document.getElementById('next-btn').style.display = 'block';
                 document.querySelectorAll('.opt').forEach(btn => btn.disabled = true);
             };
@@ -129,6 +171,7 @@
         document.getElementById('feedback').style.display = 'none';
         document.getElementById('next-btn').style.display = 'none';
     }
+
     generateQuestion();
 </script>
 </body>
