@@ -1,24 +1,148 @@
-// UPDATED ASTRONOMY GENERATOR
-() => {
-    const planets = [
-        { name: "Mercury", type: "Terrestrial", AU: 0.39, fact: "Closest to the Sun, rocky, and has no atmosphere." },
-        { name: "Venus", type: "Terrestrial", AU: 0.72, fact: "Hottest planet due to a thick CO2 atmosphere (Greenhouse Effect)." },
-        { name: "Mars", type: "Terrestrial", AU: 1.52, fact: "The 'Red Planet' with a thin atmosphere and iron-oxide soil." },
-        { name: "Jupiter", type: "Gas Giant", AU: 5.20, fact: "The largest planet, mostly Hydrogen/Helium with a Great Red Spot." },
-        { name: "Saturn", type: "Gas Giant", AU: 9.54, fact: "Known for its extensive ring system made of ice and rock." },
-        { name: "Neptune", type: "Gas Giant", AU: 30.06, fact: "The farthest planet, extremely cold with high-speed winds." }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grade 9 Science: Level 4 Mastery</title>
+    <style>
+        :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background: #cbd5e1; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 850px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .nav { display: flex; background: #1e293b; padding: 10px; gap: 10px; }
+        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; color: white; background: rgba(255,255,255,0.1); font-weight: bold; }
+        .nav button.active { background: white; color: var(--dark); }
+        .content { padding: 30px; min-height: 450px; }
+        .visual-box { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; font-family: monospace; white-space: pre-wrap; font-size: 1.1rem; line-height: 1.5; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+        button.opt:hover:not(:disabled) { border-color: var(--dark); background: #f1f5f9; }
+        .feedback { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; line-height: 1.6; border-left: 10px solid; }
+        .correct { background: #dcfce7; color: #166534; border-color: var(--eco); }
+        .wrong { background: #fee2e2; color: #991b1b; border-color: var(--chem); }
+        .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; display: none; font-weight: bold; }
+        .formula-card { background: #f8fafc; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin: 10px 0; text-align: center; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav">
+        <button id="btn-game" class="active" onclick="switchTab('game')">🎮 RANDOM CHALLENGE</button>
+        <button id="btn-cheat" onclick="switchTab('cheat')">📜 LEVEL 4+ CHEAT SHEET</button>
+    </div>
+    <div id="game-view">
+        <div id="unit-tag" style="padding: 10px; text-align: center; color: white; font-weight: bold; text-transform: uppercase;">Unit Loading...</div>
+        <div class="content">
+            <div id="visual" class="visual-box"></div>
+            <div id="question" style="font-size: 1.3rem; font-weight: 700; margin-bottom: 25px;"></div>
+            <div id="options" class="grid"></div>
+            <div id="feedback"></div>
+            <button id="next-btn" class="next-btn" onclick="generateRandomQuestion()">Generate Next Random Question →</button>
+        </div>
+    </div>
+    <div id="cheat-view" class="hidden" style="padding:30px;">
+        <h2 style="text-align:center;">The Mastery Triangles</h2>
+        <div class="grid">
+            <div class="formula-card" style="border-top: 5px solid var(--chem);">
+                <h3>Chemistry: Density</h3>
+                <p>M (Mass) at Top</p>
+                <p>D (Density) | V (Volume) at Bottom</p>
+                <small>Cover the one you need!</small>
+            </div>
+            <div class="formula-card" style="border-top: 5px solid var(--elec);">
+                <h3>Electricity: Ohm's Law</h3>
+                <p>V (Voltage) at Top</p>
+                <p>I (Current) | R (Resistance) at Bottom</p>
+                <small>Cover 'I' to get V / R</small>
+            </div>
+        </div>
+        <div style="margin-top:20px; padding:15px; background:#eef2ff; border-radius:10px;">
+            <h3>Astronomy: Planet Types</h3>
+            <p><b>Terrestrial (Inner):</b> Mercury, Venus, Earth, Mars. Rocky, small, high density.</p>
+            <p><b>Gas Giants (Outer):</b> Jupiter, Saturn, Uranus, Neptune. Gaseous (H & He), massive, low density, many moons.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const units = [
+        // ASTRONOMY UNIT (With detailed Level 4 logic)
+        () => {
+            const pData = [
+                {n: "Venus", t: "Terrestrial", d: "0.72 AU", f: "It has a thick, toxic CO2 atmosphere that traps heat (Greenhouse Effect)."},
+                {n: "Saturn", t: "Gas Giant", d: "9.58 AU", f: "It has a massive ring system and is so low-density it would float in water!"}
+            ];
+            const p = pData[Math.floor(Math.random()*pData.length)];
+            return {
+                unit: "Astronomy", color: "var(--space)",
+                visual: `PLANET: ${p.n}\nLOCATION: ${p.d} from Sun`,
+                q: `Classify ${p.n} and explain why it belongs in that category.`,
+                options: ["Terrestrial (Inner/Rocky)", "Gas Giant (Outer/Fluid)", "Dwarf Planet", "Star"],
+                answer: p.t === "Terrestrial" ? "Terrestrial (Inner/Rocky)" : "Gas Giant (Outer/Fluid)",
+                explain: `<strong>Level 4 Analysis:</strong> ${p.n} is a <b>${p.t}</b> planet. ${p.t === "Terrestrial" ? 
+                    "Inner planets like Venus formed closer to the Sun where it was too hot for gases to condense, leaving rocky, high-density materials." : 
+                    "Outer planets like Saturn formed beyond the 'frost line' where it was cool enough for massive amounts of hydrogen and helium to gather."} ${p.f}`
+            };
+        },
+        // CHEMISTRY UNIT (Based on your photo question #14)
+        () => {
+            const m = 360; const v = 45; const ans = "8.0 g/cm³";
+            return {
+                unit: "Chemistry", color: "var(--chem)",
+                visual: `OBJECT DATA:\nMass (m): ${m}g\nVolume (V): ${v}cm³`,
+                q: "What is the density of this metal block? (From your test photo!)",
+                options: [ans, "0.125 g/cm³", "405 g/cm³", "16 g/cm³"],
+                answer: ans,
+                explain: "<strong>Step-by-Step:</strong> Cover 'D' in your triangle. You see M / V. $360 \\div 45 = 8.0$. Remember the units: $g/cm^3$!"
+            };
+        },
+        // ELECTRICITY UNIT (Symbols & Math)
+        () => {
+            const v = 12; const r = 3; const i = 4;
+            return {
+                unit: "Electricity", color: "var(--elec)",
+                visual: `CIRCUIT SPECS:\nBattery: ${v}V\nResistor: ${r}Ω`,
+                q: "What is the Current (I) in Amps?",
+                options: [i+"A", (v*r)+"A", (r/v).toFixed(2)+"A", "15A"],
+                answer: i+"A",
+                explain: "<strong>Step-by-Step:</strong> Cover 'I' in your triangle. You see V / R. $12 \\div 3 = 4$. Current is the flow of electrons, measured in Amps."
+            };
+        }
     ];
-    const p = planets[Math.floor(Math.random() * planets.length)];
-    return {
-        unit: "Astronomy", color: "var(--space)",
-        visual: `CELESTIAL DATA:\nPlanet: ${p.name}\nDistance: ${p.AU} AU from Sun`,
-        q: `Classify ${p.name} and explain its primary characteristics.`,
-        options: ["Terrestrial (Inner/Rocky)", "Gas Giant (Outer/Fluid)", "Dwarf Planet", "Exoplanet"],
-        answer: p.type === "Terrestrial" ? "Terrestrial (Inner/Rocky)" : "Gas Giant (Outer/Fluid)",
-        explain: `<strong>Level 4+ Solution:</strong> ${p.name} is classified as a <b>${p.type}</b> planet. 
-                  ${p.type === "Terrestrial" ? 
-                  "Terrestrial planets are 'Inner Planets' located within 2 AU of the Sun. They have solid, rocky surfaces and high densities." : 
-                  "Gas Giants are 'Outer Planets' located far beyond the asteroid belt. They are massive, have low densities, and are composed mostly of gases like Hydrogen and Helium."} 
-                  Key Fact: ${p.fact}`
-    };
-}
+
+    function generateRandomQuestion() {
+        const gen = units[Math.floor(Math.random() * units.length)];
+        const data = gen();
+        document.getElementById('unit-tag').innerText = data.unit;
+        document.getElementById('unit-tag').style.background = data.color;
+        document.getElementById('visual').innerText = data.visual;
+        document.getElementById('question').innerText = data.q;
+        const opts = document.getElementById('options');
+        opts.innerHTML = '';
+        data.options.sort(() => Math.random() - 0.5).forEach(o => {
+            const b = document.createElement('button');
+            b.className = 'opt';
+            b.innerText = o;
+            b.onclick = () => {
+                const fb = document.getElementById('feedback');
+                fb.style.display = 'block';
+                fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
+                fb.innerHTML = `<strong>${o === data.answer ? '✅ CORRECT' : '❌ INCORRECT'}</strong><br>${data.explain}`;
+                document.getElementById('next-btn').style.display = 'block';
+                document.querySelectorAll('.opt').forEach(btn => btn.disabled = true);
+            };
+            opts.appendChild(b);
+        });
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+    }
+
+    function switchTab(t) {
+        document.getElementById('game-view').classList.toggle('hidden', t !== 'game');
+        document.getElementById('cheat-view').classList.toggle('hidden', t !== 'cheat');
+        document.getElementById('btn-game').classList.toggle('active', t === 'game');
+        document.getElementById('btn-cheat').classList.toggle('active', t === 'cheat');
+    }
+    generateRandomQuestion();
+</script>
+</body>
+</html>
