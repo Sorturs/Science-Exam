@@ -2,38 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Grade 9 Science: Infinite Mastery</title>
+    <title>Grade 9 Science: The Variable Swap</title>
     <style>
         :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; }
         body { font-family: 'Inter', sans-serif; background: #cbd5e1; margin: 0; padding: 20px; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
         .container { width: 100%; max-width: 1100px; background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); display: flex; overflow: hidden; }
-        
-        /* LEFT: Questions */
         .quiz-side { flex: 1.6; display: flex; flex-direction: column; border-right: 2px solid #e2e8f0; }
         .banner { padding: 15px; text-align: center; color: white; font-weight: 800; text-transform: uppercase; font-size: 1.2rem; }
         .quiz-content { padding: 30px; overflow-y: auto; flex-grow: 1; }
-        
-        /* RIGHT: Calculator */
         .tool-side { flex: 1; background: #f8fafc; padding: 25px; display: flex; flex-direction: column; align-items: center; }
         .calc-display { width: 90%; background: #1e293b; color: #10b981; padding: 20px; border-radius: 10px; text-align: right; font-size: 1.8rem; margin-bottom: 20px; font-family: monospace; border: 2px solid #334155; min-height: 40px; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
-        .c-btn { padding: 18px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; background: white; font-weight: bold; font-size: 1.1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .c-btn:hover { background: #f1f5f9; }
-
+        .c-btn { padding: 18px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; background: white; font-weight: bold; font-size: 1.1rem; }
         .visual-box { background: #f1f5f9; border-radius: 12px; padding: 25px; margin-bottom: 25px; font-family: 'Courier New', monospace; font-size: 1.2rem; border: 1px solid #e2e8f0; line-height: 1.5; }
         .opt-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        .opt-btn { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; text-align: left; font-size: 1.05rem; transition: 0.2s; }
-        .opt-btn:hover:not(:disabled) { border-color: var(--dark); background: #f8fafc; }
+        .opt-btn { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; text-align: left; font-size: 1.05rem; }
         .feedback { margin-top: 20px; padding: 20px; border-radius: 12px; display: none; line-height: 1.6; border-left: 10px solid; }
-        .correct { background: #dcfce7; border-color: var(--eco); color: #166534; }
-        .wrong { background: #fee2e2; border-color: var(--chem); color: #991b1b; }
         .next-btn { width: 100%; margin-top: 20px; padding: 18px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="quiz-side">
-        <div id="unit-banner" class="banner" style="background:var(--dark)">Loading Random Challenge...</div>
+        <div id="unit-banner" class="banner" style="background:var(--dark)">Multi-Unit Review</div>
         <div class="quiz-content">
             <div id="visual" class="visual-box"></div>
             <div id="question" style="font-weight:700; font-size:1.3rem; margin-bottom:20px;"></div>
@@ -42,7 +33,6 @@
             <button id="next-btn" class="next-btn" style="display:none" onclick="generateQuestion()">Next Challenge →</button>
         </div>
     </div>
-
     <div class="tool-side">
         <h3 style="margin-top:0;">Scientific Calculator</h3>
         <div id="display" class="calc-display">0</div>
@@ -64,12 +54,6 @@
             <button class="c-btn" onclick="cPress('3')">3</button>
             <button class="c-btn" onclick="cPress('0')">0</button>
         </div>
-        <div style="margin-top:30px; background:#fff; padding:15px; border-radius:10px; border:1px solid #e2e8f0; font-size:0.9rem;">
-            <b>Triangle Reminders:</b><br>
-            • Density: $M ÷ V$<br>
-            • Current ($I$): $V ÷ R$<br>
-            • Mass Number: $P + N$
-        </div>
     </div>
 </div>
 
@@ -80,41 +64,69 @@
     function cSolve() { try { calcVal = eval(calcVal).toString(); document.getElementById('display').innerText = calcVal; } catch { document.getElementById('display').innerText = "Err"; } }
 
     const generators = [
-        // Chemistry: Density
+        // ELECTRICITY: Swap between V, I, and R
         () => {
-            const m = Math.floor(Math.random() * 450) + 100;
-            const v = Math.floor(Math.random() * 50) + 5;
-            const d = (m/v).toFixed(2);
+            const mode = Math.floor(Math.random() * 3);
+            let v, i, r, q, ans, explain;
+            if (mode === 0) { // Find Voltage (Multiply)
+                i = (Math.random() * 5 + 1).toFixed(1);
+                r = Math.floor(Math.random() * 10) + 2;
+                ans = (i * r).toFixed(1) + "V";
+                q = `A circuit has a current of ${i}A and a resistance of ${r}Ω. What is the Voltage (V)?`;
+                explain = `Formula: V = I × R. We multiply ${i} and ${r} because they are side-by-side in the triangle.`;
+            } else if (mode === 1) { // Find Resistance (Divide)
+                v = Math.floor(Math.random() * 20) + 10;
+                i = (Math.random() * 4 + 1).toFixed(1);
+                ans = (v / i).toFixed(1) + "Ω";
+                q = `A ${v}V battery is connected to a bulb with a current of ${i}A. What is the Resistance (R)?`;
+                explain = `Formula: R = V ÷ I. We divide because Voltage is at the top of the triangle.`;
+            } else { // Find Current (Divide)
+                v = Math.floor(Math.random() * 24) + 6;
+                r = Math.floor(Math.random() * 12) + 2;
+                ans = (v / r).toFixed(1) + "A";
+                q = `What is the current (I) in a circuit with ${v}V and ${r}Ω?`;
+                explain = `Formula: I = V ÷ R. Divide Voltage by Resistance.`;
+            }
+            return { unit: "Electricity", color: "var(--elec)", visual: "CIRCUIT TASK", q, options: [ans, "0.5", "10.2", "45.0"].sort(() => Math.random() - 0.5), answer: ans, explain };
+        },
+        // CHEMISTRY: Density, Mass, or Volume Swap
+        () => {
+            const mode = Math.floor(Math.random() * 2);
+            let m, d, v, q, ans, explain;
+            if (mode === 0) { // Find Density
+                m = Math.floor(Math.random() * 300) + 100;
+                v = Math.floor(Math.random() * 50) + 5;
+                ans = (m/v).toFixed(2) + " g/cm³";
+                q = `A solid block has a mass of ${m}g and a volume of ${v}cm³. Find the Density.`;
+                explain = `D = m ÷ V. This is a Quantitative Physical Property.`;
+            } else { // Find Mass
+                d = (Math.random() * 5 + 1).toFixed(1);
+                v = Math.floor(Math.random() * 30) + 5;
+                ans = (d * v).toFixed(1) + "g";
+                q = `A substance has a density of ${d}g/cm³ and a volume of ${v}cm³. What is its Mass (m)?`;
+                explain = `m = D × V. To find the top of the triangle, we multiply the bottom two values.`;
+            }
+            return { unit: "Chemistry", color: "var(--chem)", visual: "LAB DATA", q, options: [ans, "1.2 g/cm³", "500g", "15.5"].sort(() => Math.random() - 0.5), answer: ans, explain };
+        },
+        // ECOLOGY: Trophic levels and Case Studies
+        () => {
             return {
-                unit: "Chemistry", color: "var(--chem)", visual: `MASS (m): ${m}g\nVOLUME (v): ${v}cm³`,
-                q: "Find the density and classify the property.",
-                options: [d+" g/cm³ (Quantitative Physical)", (m*v).toFixed(0)+" g/cm³ (Chemical)", d+" g/cm³ (Qualitative)", "1.0 g/cm³"],
-                answer: d+" g/cm³ (Quantitative Physical)",
-                explain: "Level 4+: Density ($D=m/v$) is a quantitative physical property because it is measured with numbers."
+                unit: "Ecology", color: "var(--eco)", visual: "CASE STUDY: DDT",
+                q: "In the Grassy Narrows study, why did mercury levels stay in the fish for so long?",
+                options: ["Bioaccumulation", "Evaporation", "Photosynthesis", "Nitrogen Cycle"],
+                answer: "Bioaccumulation",
+                explain: "Bioaccumulation is the build-up of a substance (like mercury or DDT) in an organism over time[cite: 11, 20]."
             };
         },
-        // Electricity: Ohm's Law
+        // ASTRONOMY: Scaling and Eclipses
         () => {
-            const v = [6, 9, 12, 24][Math.floor(Math.random()*4)];
-            const r = [2, 3, 5, 10][Math.floor(Math.random()*4)];
-            const i = (v/r).toFixed(1);
+            const isSolar = Math.random() > 0.5;
             return {
-                unit: "Electricity", color: "var(--elec)", visual: `VOLTS: ${v}V\nOHMS: ${r}Ω`,
-                q: "What is the Current (I) in Amps?",
-                options: [i+"A", (v*r)+"A", (r/v).toFixed(1)+"A", "10A"],
-                answer: i+"A",
-                explain: "Level 4+: Current is the flow of charge ($I=V/R$). If resistance goes up, current goes down."
-            };
-        },
-        // Astronomy: Planet Types
-        () => {
-            const p = [{n:"Mars", t:"Terrestrial", f:"Rocky surface"}, {n:"Jupiter", t:"Gas Giant", f:"Gaseous/Fluid"}][Math.floor(Math.random()*2)];
-            return {
-                unit: "Astronomy", color: "var(--space)", visual: `PLANET: ${p.n}`,
-                q: `Classify ${p.n} and explain its density.`,
-                options: ["Terrestrial (Inner/High Density)", "Gas Giant (Outer/Low Density)", "Dwarf Planet", "Exoplanet"],
-                answer: p.t === "Terrestrial" ? "Terrestrial (Inner/High Density)" : "Gas Giant (Outer/Low Density)",
-                explain: `Level 4+: ${p.n} is a ${p.t}. Inner planets are rocky/dense; outer planets are gas-based/low density.`
+                unit: "Astronomy", color: "var(--space)", visual: isSolar ? "Sun -- Moon -- Earth" : "Sun -- Earth -- Moon",
+                q: `Identify this eclipse based on the alignment.`,
+                options: ["Solar Eclipse", "Lunar Eclipse", "Equinox", "Solstice"],
+                answer: isSolar ? "Solar Eclipse" : "Lunar Eclipse",
+                explain: isSolar ? "The Moon is in the middle, blocking the Sun ." : "The Earth is in the middle, casting a shadow on the Moon."
             };
         }
     ];
@@ -127,7 +139,7 @@
         document.getElementById('question').innerText = data.q;
         const opts = document.getElementById('options');
         opts.innerHTML = '';
-        data.options.sort(() => Math.random() - 0.5).forEach(o => {
+        data.options.forEach(o => {
             const b = document.createElement('button');
             b.className = 'opt-btn';
             b.innerText = o;
@@ -135,7 +147,7 @@
                 const fb = document.getElementById('feedback');
                 fb.style.display = 'block';
                 fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
-                fb.innerHTML = `<b>${o === data.answer ? '✅ LEVEL 4 SUCCESS' : '❌ LEVEL UP TIP'}</b><br>${data.explain}`;
+                fb.innerHTML = `<b>${o === data.answer ? '✅ CORRECT' : '❌ INCORRECT'}</b><br>${data.explain}`;
                 document.getElementById('next-btn').style.display = 'block';
                 document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
             };
