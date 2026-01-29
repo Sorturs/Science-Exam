@@ -2,154 +2,92 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Grade 9 Science: Final Mastery App</title>
+    <title>Infinite Science Randomizer</title>
     <style>
-        :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; --bg: #f1f5f9; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        
-        /* Navigation */
-        .nav { display: flex; background: #1e293b; padding: 5px; }
-        .nav button { flex: 1; padding: 15px; border: none; color: white; background: none; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; border-radius: 10px; }
+        :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background: #cbd5e1; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .nav { display: flex; background: #1e293b; padding: 10px; gap: 10px; }
+        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; color: white; background: rgba(255,255,255,0.1); font-weight: bold; }
         .nav button.active { background: white; color: var(--dark); }
-
-        .content { padding: 30px; min-height: 500px; }
-        .hidden { display: none; }
-
-        /* Cheat Sheet Styles */
-        .cheat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .cheat-card { border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
-        .cheat-header { padding: 10px; color: white; font-weight: bold; text-align: center; }
-        .cheat-body { padding: 15px; font-size: 0.9rem; line-height: 1.4; }
-        .formula { background: #f8fafc; padding: 5px; border-radius: 4px; font-family: monospace; font-weight: bold; display: block; margin: 5px 0; }
-
-        /* Game Styles */
-        .visual-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center; font-family: monospace; white-space: pre-wrap; }
-        .q-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-weight: 500; transition: 0.2s; }
-        button.opt:hover { border-color: var(--dark); background: #f8fafc; }
-        .feedback { margin-top: 20px; padding: 20px; border-radius: 12px; display: none; border-left: 10px solid; }
-        .correct { background: #dcfce7; border-color: var(--eco); color: #166534; }
-        .wrong { background: #fee2e2; border-color: var(--chem); color: #991b1b; }
-        .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; display: none; }
+        .header { padding: 15px; text-align: center; color: white; font-weight: bold; font-size: 1.2rem; }
+        .content { padding: 30px; min-height: 400px; }
+        .visual-box { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; font-family: monospace; white-space: pre-wrap; font-size: 1.1rem; }
+        .q-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 25px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+        button.opt:hover:not(:disabled) { border-color: var(--dark); background: #f1f5f9; }
+        .feedback { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; line-height: 1.6; border-left: 10px solid; }
+        .correct { background: #dcfce7; color: #166534; border-color: var(--eco); }
+        .wrong { background: #fee2e2; color: #991b1b; border-color: var(--chem); }
+        .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; display: none; font-size: 1.1rem; font-weight: bold; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="nav">
-        <button id="tab-game" class="active" onclick="switchTab('game')">🎮 PRACTICE GAME</button>
-        <button id="tab-cheat" onclick="switchTab('cheat')">📜 EXAM CHEAT SHEET</button>
+        <button id="btn-game" class="active" onclick="switchTab('game')">🎮 RANDOM CHALLENGE</button>
+        <button id="btn-cheat" onclick="switchTab('cheat')">📜 STUDY TRIANGLES</button>
     </div>
-
-    <div id="section-game">
-        <div id="unit-banner" style="padding: 10px; text-align: center; color: white; font-weight: bold;">CHEMISTRY</div>
+    <div id="game-view">
+        <div id="unit-tag" class="header">UNIT LOADING...</div>
         <div class="content">
             <div id="visual" class="visual-box"></div>
             <div id="question" class="q-text"></div>
-            <div id="options" class="options-grid"></div>
-            <div id="feedback" class="feedback"></div>
-            <button id="next-btn" class="next-btn" onclick="generateQuestion()">Next Random Question →</button>
+            <div id="options" class="grid"></div>
+            <div id="feedback"></div>
+            <button id="next-btn" class="next-btn" onclick="generateRandomQuestion()">Generate New Question →</button>
         </div>
     </div>
-
-    <div id="section-cheat" class="hidden">
-        <div class="content">
-            <div class="cheat-grid">
-                <div class="cheat-card">
-                    <div class="cheat-header" style="background: var(--chem)">CHEMISTRY</div>
-                    <div class="cheat-body">
-                        <b>Density Formula:</b> <span class="formula">D = m / V</span>
-                        <b>Atom Parts:</b> Protons (+) & Neutrons (0) in nucleus. Electrons (-) in shells.
-                        <b>Bohr-Rutherford:</b> Shell 1 holds 2. Shell 2 holds 8.
-                        <b>Physical Change:</b> No new substance (Ice melting).
-                        <b>Chemical Change:</b> New substance (Rusting).
-                    </div>
-                </div>
-                <div class="cheat-card">
-                    <div class="cheat-header" style="background: var(--elec)">ELECTRICITY</div>
-                    <div class="cheat-body">
-                        <b>Ohm's Law:</b> <span class="formula">V = I x R</span>
-                        <b>I (Current):</b> Amps (Flow) <br>
-                        <b>V (Voltage):</b> Volts (Pressure) <br>
-                        <b>R (Resistance):</b> Ohms (Friction) <br>
-                        <b>Series:</b> One loop. <b>Parallel:</b> Many loops.
-                    </div>
-                </div>
-                <div class="cheat-card">
-                    <div class="cheat-header" style="background: var(--eco)">ECOLOGY</div>
-                    <div class="cheat-body">
-                        <b>Bioaccumulation:</b> Toxins build up in one animal.
-                        <b>Biomagnification:</b> Toxins get <i>higher</i> as you go up the food web.
-                        <b>PMAT (Mitosis):</b> Prophase, Metaphase (Middle), Anaphase (Away), Telophase (Two).
-                    </div>
-                </div>
-                <div class="cheat-card">
-                    <div class="cheat-header" style="background: var(--space)">ASTRONOMY</div>
-                    <div class="cheat-body">
-                        <b>Solar Eclipse:</b> Moon is in the middle (blocks Sun).
-                        <b>Lunar Eclipse:</b> Earth is in the middle (shadow on Moon).
-                        <b>Planets:</b> Inner = Terrestrial/Rocky. Outer = Gas Giants.
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="cheat-view" class="hidden" style="padding:40px; text-align:center;">
+        <h2>How to solve the math:</h2>
+        <p><b>Density:</b> Mass at the TOP. Density and Volume at the BOTTOM.</p>
+        <p><b>Electricity:</b> Voltage at the TOP. Current (I) and Resistance at the BOTTOM.</p>
     </div>
 </div>
 
 <script>
-    const generators = [
+    const units = [
+        // CHEMISTRY GENERATOR
         () => {
-            const m = Math.floor(Math.random() * 150) + 50;
-            const v = Math.floor(Math.random() * 20) + 5;
-            const d = (m/v).toFixed(1);
-            return {
-                unit: "Chemistry", color: "var(--chem)",
-                visual: `OBJECT SCAN:\nMass: ${m}g\nVolume: ${v}mL`,
-                q: "What is the density of this object?",
-                options: [d + " g/mL", (m*v).toFixed(0) + " g/mL", (v/m).toFixed(2) + " g/mL", "1.0 g/mL"],
-                answer: d + " g/mL",
-                explain: `Step 1: Get the formula (D=m/V). Step 2: Divide mass (${m}) by volume (${v}). Result: ${d}.`
-            };
+            const types = ["density", "particles", "change"];
+            const type = types[Math.floor(Math.random()*types.length)];
+            if(type === "density") {
+                const m = Math.floor(Math.random() * 400) + 10;
+                const v = Math.floor(Math.random() * 50) + 2;
+                const ans = (m/v).toFixed(2);
+                return { unit: "Chemistry", color: "var(--chem)", visual: `MASS: ${m}g\nVOLUME: ${v}cm³`, q: "Calculate the density of this sample.", options: [ans+" g/cm³", (m*v).toFixed(0)+" g/cm³", (v/m).toFixed(2)+" g/cm³", "1.00 g/cm³"], answer: ans+" g/cm³", explain: "Density = Mass ÷ Volume. Cover 'D' on your triangle!" };
+            } else {
+                return { unit: "Chemistry", color: "var(--chem)", visual: "OBSERVATION: Bubbles forming and heat released.", q: "What kind of change is occurring?", options: ["Chemical Change", "Physical Change", "Phase Change", "Density Change"], answer: "Chemical Change", explain: "New gas (bubbles) and heat are signs of a chemical reaction." };
+            }
         },
+        // ELECTRICITY GENERATOR
         () => {
-            const v = [6, 12, 24][Math.floor(Math.random()*3)];
-            const r = [2, 3, 4][Math.floor(Math.random()*3)];
-            const i = v / r;
-            return {
-                unit: "Electricity", color: "var(--elec)",
-                visual: `CIRCUIT SETTINGS:\nVoltage: ${v}V\nResistance: ${r}Ω`,
-                q: "Calculate the Current (I) in Amps.",
-                options: [i + "A", (v*r) + "A", (r/v).toFixed(2) + "A", "0A"],
-                answer: i + "A",
-                explain: `Use I = V / R. Divide your Voltage (${v}) by Resistance (${r}) to get ${i} Amps.`
-            };
+            const v = [3, 6, 9, 12, 24][Math.floor(Math.random()*5)];
+            const r = [2, 3, 5, 10][Math.floor(Math.random()*4)];
+            const i = (v/r).toFixed(1);
+            return { unit: "Electricity", color: "var(--elec)", visual: `VOLTAGE: ${v}V\nRESISTANCE: ${r}Ω`, q: "What is the Current (I) in Amps?", options: [i+"A", (v*r)+"A", (v+r)+"A", (r/v).toFixed(2)+"A"], answer: i+"A", explain: "Current (I) = Voltage ÷ Resistance. Units are Amps (A)!" };
         },
+        // ECOLOGY GENERATOR
         () => {
-            return {
-                unit: "Ecology", color: "var(--eco)",
-                visual: `FOOD WEB DATA:\n[Algae] -> [Bug] -> [Frog] -> [Heron]`,
-                q: "Which organism suffers most from Biomagnification of DDT?",
-                options: ["Algae", "Bug", "Frog", "Heron"],
-                answer: "Heron",
-                explain: `Rule: Toxins increase in concentration as you move UP. The Heron is the top predator.`
-            };
+            const bugs = ["Pesticide", "DDT", "Toxic Waste"];
+            const bug = bugs[Math.floor(Math.random()*3)];
+            return { unit: "Ecology", color: "var(--eco)", visual: `TOXIN: ${bug}\nLEVELS: Algae -> Minnow -> Salmon -> Bear`, q: `Which level has the highest concentration of ${bug}?`, options: ["Bear", "Algae", "Salmon", "Minnow"], answer: "Bear", explain: "Biomagnification: Toxins get concentrated as you go UP the food chain." };
+        },
+        // ASTRONOMY GENERATOR
+        () => {
+            const p = ["Mars", "Jupiter", "Venus", "Neptune", "Mercury", "Saturn"];
+            const planet = p[Math.floor(Math.random()*p.length)];
+            const type = (p.indexOf(planet) % 2 === 0) ? "Terrestrial (Rocky)" : "Gas Giant";
+            return { unit: "Astronomy", color: "var(--space)", visual: `PLANET: ${planet}`, q: `Classify ${planet} by its physical properties.`, options: ["Terrestrial (Rocky)", "Gas Giant", "Dwarf Planet", "Star"], answer: type, explain: "Inner planets are rocky; outer planets are gas giants." };
         }
     ];
 
-    function switchTab(tab) {
-        document.getElementById('section-game').classList.toggle('hidden', tab !== 'game');
-        document.getElementById('section-cheat').classList.toggle('hidden', tab !== 'cheat');
-        document.getElementById('tab-game').classList.toggle('active', tab === 'game');
-        document.getElementById('tab-cheat').classList.toggle('active', tab === 'cheat');
-    }
-
-    function generateQuestion() {
-        const gen = generators[Math.floor(Math.random() * generators.length)];
+    function generateRandomQuestion() {
+        const gen = units[Math.floor(Math.random() * units.length)];
         const data = gen();
-        document.getElementById('unit-banner').innerText = data.unit;
-        document.getElementById('unit-banner').style.background = data.color;
+        document.getElementById('unit-tag').innerText = data.unit.toUpperCase();
+        document.getElementById('unit-tag').style.background = data.color;
         document.getElementById('visual').innerText = data.visual;
         document.getElementById('question').innerText = data.q;
         const opts = document.getElementById('options');
@@ -162,7 +100,7 @@
                 const fb = document.getElementById('feedback');
                 fb.style.display = 'block';
                 fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
-                fb.innerHTML = `<b>${o === data.answer ? '✅ Correct' : '❌ Study Tip'}</b><br>${data.explain}`;
+                fb.innerHTML = `<strong>${o === data.answer ? '✅ CORRECT' : '❌ INCORRECT'}</strong><br>${data.explain}`;
                 document.getElementById('next-btn').style.display = 'block';
                 document.querySelectorAll('.opt').forEach(btn => btn.disabled = true);
             };
@@ -172,7 +110,15 @@
         document.getElementById('next-btn').style.display = 'none';
     }
 
-    generateQuestion();
+    function switchTab(t) {
+        document.getElementById('game-view').classList.toggle('hidden', t !== 'game');
+        document.getElementById('cheat-view').classList.toggle('hidden', t !== 'cheat');
+        document.getElementById('btn-game').classList.toggle('active', t === 'game');
+        document.getElementById('btn-cheat').classList.toggle('active', t === 'cheat');
+    }
+
+    generateRandomQuestion();
 </script>
+<style>.hidden { display: none; }</style>
 </body>
 </html>
