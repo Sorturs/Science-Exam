@@ -2,50 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Science Exam Mastery: Level 4+</title>
+    <title>Grade 9 Science: Level 4+ Simulator</title>
     <style>
         :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; }
         body { font-family: 'Inter', sans-serif; background: #cbd5e1; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 950px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; display: flex; height: 650px; }
-        
-        /* Game Section */
+        .container { width: 100%; max-width: 950px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; display: flex; height: 720px; }
         .game-side { flex: 2; display: flex; flex-direction: column; border-right: 2px solid #e2e8f0; }
+        .calc-side { flex: 1; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; }
         .header { padding: 15px; text-align: center; color: white; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; }
         .content { padding: 30px; overflow-y: auto; flex-grow: 1; }
-        
-        /* Calculator Side */
-        .calc-side { flex: 1; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; }
-        .calc-display { background: #1e293b; color: #10b981; padding: 15px; border-radius: 8px; text-align: right; font-size: 1.5rem; margin-bottom: 15px; font-family: monospace; }
+        .calc-display { background: #1e293b; color: #10b981; padding: 15px; border-radius: 8px; text-align: right; font-size: 1.5rem; margin-bottom: 15px; font-family: monospace; min-height: 40px; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .calc-btn { padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; background: white; font-weight: bold; }
-        .calc-btn:hover { background: #e2e8f0; }
-
         .visual-box { background: #f1f5f9; border-radius: 12px; padding: 20px; margin-bottom: 20px; font-family: 'Courier New', monospace; white-space: pre-wrap; border: 1px solid #e2e8f0; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; font-size: 1rem; }
         button.opt:hover:not(:disabled) { border-color: var(--dark); background: #f1f5f9; }
         .feedback { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; line-height: 1.6; border-left: 10px solid; }
-        .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; display: none; font-weight: bold; }
         .correct { background: #dcfce7; border-color: var(--eco); color: #166534; }
         .wrong { background: #fee2e2; border-color: var(--chem); color: #991b1b; }
+        .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="game-side">
-        <div id="unit-banner" class="header" style="background:var(--dark)">Press Start</div>
+        <div id="unit-banner" class="header">Unit</div>
         <div class="content">
-            <div id="visual" class="visual-box">Welcome to the Final Review. Click "Next" to generate a random exam question.</div>
-            <div id="question" style="font-weight:700; font-size:1.2rem; margin-bottom:20px;">Ready to Level Up?</div>
+            <div id="visual" class="visual-box"></div>
+            <div id="question" style="font-weight:700; font-size:1.2rem; margin-bottom:20px;"></div>
             <div id="options" class="grid"></div>
             <div id="feedback" class="feedback"></div>
-            <button id="next-btn" class="next-btn" style="display:block" onclick="generateQuestion()">Next Random Challenge →</button>
+            <button id="next-btn" class="next-btn" style="display:none" onclick="generateQuestion()">Next Challenge →</button>
         </div>
     </div>
-
     <div class="calc-side">
-        <h3>Exam Tool: Calculator</h3>
+        <h3 style="margin-top:0">Scientific Calculator</h3>
         <div id="display" class="calc-display">0</div>
         <div class="calc-grid">
             <button class="calc-btn" onclick="cClear()">C</button>
@@ -65,7 +57,11 @@
             <button class="calc-btn" onclick="cPress('3')">3</button>
             <button class="calc-btn" onclick="cPress('0')">0</button>
         </div>
-        <p style="font-size: 0.8rem; margin-top: 20px;"><b>Formula Triangles:</b><br>M / (D * V) <br> V / (I * R)</p>
+        <div style="margin-top:20px; font-size:0.85rem; color:#475569;">
+            <b>Math Triangles:</b><br>
+            Mass / (Density * Vol)<br>
+            Volts / (Amps * Ohms)
+        </div>
     </div>
 </div>
 
@@ -73,68 +69,50 @@
     let calcExp = "";
     function cPress(v) { calcExp += v; document.getElementById('display').innerText = calcExp; }
     function cClear() { calcExp = ""; document.getElementById('display').innerText = "0"; }
-    function cSolve() { try { calcExp = eval(calcExp).toString(); document.getElementById('display').innerText = calcExp; } catch { document.getElementById('display').innerText = "Err"; calcExp = ""; } }
+    function cSolve() { try { calcExp = eval(calcExp).toString(); document.getElementById('display').innerText = calcExp; } catch { document.getElementById('display').innerText = "Err"; } }
 
     const generators = [
-        // CHEMISTRY: Density (Math Randomizer)
+        // CHEMISTRY: Density Randomizer (Based on Test Q#14)
         () => {
             const m = Math.floor(Math.random() * 400) + 100;
-            const v = Math.floor(Math.random() * 40) + 5;
+            const v = Math.floor(Math.random() * 60) + 10;
             const d = (m/v).toFixed(2);
             return {
-                unit: "Chemistry", color: "var(--chem)",
-                visual: `LAB DATA:\nMass: ${m}g\nVolume: ${v}cm³`,
-                q: "What is the density? (Provide a Level 4+ Answer)",
+                unit: "Chemistry", color: "var(--chem)", visual: `SAMPLE DATA:\nMass (m) = ${m}g\nVolume (V) = ${v}cm³`,
+                q: "Calculate the density of this metal block.",
                 options: [d+" g/cm³", (m*v).toFixed(0)+" g/cm³", (v/m).toFixed(2)+" g/cm³", "1.00 g/cm³"],
                 answer: d+" g/cm³",
-                explain: `<strong>Level 4+:</strong> Density is a quantitative physical property calculated using $D = m/V$. By dividing ${m}g by ${v}cm³, we get ${d}g/cm³. High density indicates particles are packed closer together.`
+                explain: `<strong>Level 4+ Solution:</strong> Using $D=m/V$, we divide ${m}g by ${v}cm³ to find a density of ${d}g/cm³. This is a quantitative physical property.`
             };
         },
-        // ELECTRICITY: Ohm's Law (Math Randomizer)
+        // ELECTRICITY: Ohm's Law (The "Amps" Question)
         () => {
-            const v = [6, 9, 12, 24][Math.floor(Math.random()*4)];
-            const r = [2, 3, 4, 6, 10][Math.floor(Math.random()*5)];
+            const v = [6, 12, 24][Math.floor(Math.random()*3)];
+            const r = [2, 3, 4, 6][Math.floor(Math.random()*4)];
             const i = (v/r).toFixed(1);
             return {
-                unit: "Electricity", color: "var(--elec)",
-                visual: `CIRCUIT SPECS:\nVoltage: ${v}V\nResistance: ${r}Ω`,
-                q: "Calculate the Current (I) in Amps.",
-                options: [i+"A", (v*r)+"A", (r/v).toFixed(2)+"A", (v+r)+"A"],
+                unit: "Electricity", color: "var(--elec)", visual: `CIRCUIT:\nVoltage (V) = ${v}V\nResistance (R) = ${r}Ω`,
+                q: "What is the Current (I) in Amps?",
+                options: [i+"A", (v*r)+"A", (r/v).toFixed(1)+"A", (v+r)+"A"],
                 answer: i+"A",
-                explain: `<strong>Level 4+:</strong> Using Ohm's Law ($I = V/R$), we divide the potential difference (${v}V) by the resistance (${r}Ω). The flow of electrons is ${i} Amps.`
+                explain: "<strong>Level 4+ Solution:</strong> Cover 'I' in the VIR triangle to see $V/R$. Current is the flow rate of electrons."
             };
         },
-        // SPACE: Planet Classification
+        // ASTRONOMY: Planet Classification (Frost Line Logic)
         () => {
-            const p = [
-                {n: "Venus", t: "Terrestrial", d: "0.72 AU", f: "It has a thick CO2 atmosphere that creates a runaway greenhouse effect."},
-                {n: "Jupiter", t: "Gas Giant", d: "5.2 AU", f: "It is composed mainly of Hydrogen and Helium and lacks a solid surface."}
-            ][Math.floor(Math.random()*2)];
+            const p = [{n:"Venus", t:"Terrestrial", f:"Rocky surface"}, {n:"Jupiter", t:"Gas Giant", f:"Gaseous atmosphere"}][Math.floor(Math.random()*2)];
             return {
-                unit: "Astronomy", color: "var(--space)",
-                visual: `PLANET: ${p.n}\nDISTANCE: ${p.d} from Sun`,
-                q: `Classify ${p.n} and explain why.`,
-                options: ["Terrestrial (Inner/Rocky)", "Gas Giant (Outer/Fluid)", "Dwarf Planet", "Star"],
-                answer: p.t === "Terrestrial" ? "Terrestrial (Inner/Rocky)" : "Gas Giant (Outer/Fluid)",
-                explain: `<strong>Level 4+:</strong> ${p.n} is a <b>${p.t}</b> planet. Terrestrial planets are rocky and high-density, while Gas Giants are large, low-density spheres of fluid and gas found beyond the frost line.`
-            };
-        },
-        // ECOLOGY: Biomagnification
-        () => {
-            return {
-                unit: "Ecology", color: "var(--eco)",
-                visual: `SCENARIO:\nDDT enters a marsh.`,
-                q: "Which organism will show the highest level of toxins?",
-                options: ["Top Predator (Osprey)", "Producer (Algae)", "Primary Consumer (Bug)", "Secondary Consumer (Fish)"],
-                answer: "Top Predator (Osprey)",
-                explain: `<strong>Level 4+:</strong> This is due to <b>Biomagnification</b>. Persistent toxins like DDT do not break down; they accumulate in tissues and concentrate as they move up the food web[cite: 18, 20].`
+                unit: "Astronomy", color: "var(--space)", visual: `PLANET: ${p.n}`,
+                q: `Classify ${p.n} and explain the solar system formation logic.`,
+                options: ["Terrestrial (Inner)", "Gas Giant (Outer)", "Dwarf Planet", "Star"],
+                answer: p.t === "Terrestrial" ? "Terrestrial (Inner)" : "Gas Giant (Outer)",
+                explain: `<strong>Level 4+ Solution:</strong> ${p.n} is a <b>${p.t}</b>. Inner planets formed where it was too hot for gas to condense, while outer planets formed past the 'frost line' where gases became massive atmospheres.`
             };
         }
     ];
 
     function generateQuestion() {
-        const gen = generators[Math.floor(Math.random() * generators.length)];
-        const data = gen();
+        const data = generators[Math.floor(Math.random() * generators.length)]();
         document.getElementById('unit-banner').innerText = data.unit.toUpperCase();
         document.getElementById('unit-banner').style.background = data.color;
         document.getElementById('visual').innerText = data.visual;
@@ -149,7 +127,7 @@
                 const fb = document.getElementById('feedback');
                 fb.style.display = 'block';
                 fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
-                fb.innerHTML = `<b>${o === data.answer ? '✅ LEVEL 4+ ANALYSIS' : '❌ IMPROVE YOUR RESPONSE'}</b><br>${data.explain}`;
+                fb.innerHTML = `<b>${o === data.answer ? '✅ LEVEL 4+ SUCCESS' : '❌ LEVEL UP TIP'}</b><br>${data.explain}`;
                 document.getElementById('next-btn').style.display = 'block';
                 document.querySelectorAll('.opt').forEach(btn => btn.disabled = true);
             };
@@ -158,6 +136,7 @@
         document.getElementById('feedback').style.display = 'none';
         document.getElementById('next-btn').style.display = 'none';
     }
+    window.onload = generateQuestion;
 </script>
 </body>
 </html>
