@@ -15,7 +15,7 @@
         
         /* RIGHT: Calculator */
         .tool-side { flex: 1; background: #f8fafc; padding: 25px; display: flex; flex-direction: column; align-items: center; }
-        .calc-display { width: 90%; background: #1e293b; color: #10b981; padding: 20px; border-radius: 10px; text-align: right; font-size: 1.8rem; margin-bottom: 20px; font-family: monospace; border: 2px solid #334155; }
+        .calc-display { width: 90%; background: #1e293b; color: #10b981; padding: 20px; border-radius: 10px; text-align: right; font-size: 1.8rem; margin-bottom: 20px; font-family: monospace; border: 2px solid #334155; min-height: 40px; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
         .c-btn { padding: 18px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; background: white; font-weight: bold; font-size: 1.1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .c-btn:hover { background: #f1f5f9; }
@@ -33,7 +33,7 @@
 <body>
 <div class="container">
     <div class="quiz-side">
-        <div id="unit-banner" class="banner" style="background:var(--dark)">Starting Exam Review...</div>
+        <div id="unit-banner" class="banner" style="background:var(--dark)">Loading Random Challenge...</div>
         <div class="quiz-content">
             <div id="visual" class="visual-box"></div>
             <div id="question" style="font-weight:700; font-size:1.3rem; margin-bottom:20px;"></div>
@@ -44,7 +44,7 @@
     </div>
 
     <div class="tool-side">
-        <h3 style="margin-top:0;">Scientific Tool</h3>
+        <h3 style="margin-top:0;">Scientific Calculator</h3>
         <div id="display" class="calc-display">0</div>
         <div class="calc-grid">
             <button class="c-btn" onclick="cClear()">C</button>
@@ -65,10 +65,10 @@
             <button class="c-btn" onclick="cPress('0')">0</button>
         </div>
         <div style="margin-top:30px; background:#fff; padding:15px; border-radius:10px; border:1px solid #e2e8f0; font-size:0.9rem;">
-            <b>Formulas to Use:</b><br>
-            • Density: $D = M \div V$<br>
-            • Electricity: $I = V \div R$<br>
-            • Mass #: $P + N$
+            <b>Triangle Reminders:</b><br>
+            • Density: $M ÷ V$<br>
+            • Current ($I$): $V ÷ R$<br>
+            • Mass Number: $P + N$
         </div>
     </div>
 </div>
@@ -80,38 +80,41 @@
     function cSolve() { try { calcVal = eval(calcVal).toString(); document.getElementById('display').innerText = calcVal; } catch { document.getElementById('display').innerText = "Err"; } }
 
     const generators = [
+        // Chemistry: Density
         () => {
-            const m = Math.floor(Math.random() * 400) + 100;
-            const v = Math.floor(Math.random() * 50) + 10;
+            const m = Math.floor(Math.random() * 450) + 100;
+            const v = Math.floor(Math.random() * 50) + 5;
             const d = (m/v).toFixed(2);
             return {
-                unit: "Chemistry", color: "var(--chem)", visual: `LAB SAMPLE:\nMass = ${m}g\nVolume = ${v}cm³`,
-                q: "What is the density? Identify if this is a physical or chemical property.",
-                options: [d+" g/cm³ (Physical)", d+" g/cm³ (Chemical)", (m+v).toFixed(0)+" g/cm³ (Physical)", "1.0 g/cm³ (Chemical)"],
-                answer: d+" g/cm³ (Physical)",
-                explain: `<strong>Level 4+:</strong> $D = m/V$ (${m} ÷ ${v}). Density is a **Physical Property**[cite: 5, 6, 7].`
+                unit: "Chemistry", color: "var(--chem)", visual: `MASS (m): ${m}g\nVOLUME (v): ${v}cm³`,
+                q: "Find the density and classify the property.",
+                options: [d+" g/cm³ (Quantitative Physical)", (m*v).toFixed(0)+" g/cm³ (Chemical)", d+" g/cm³ (Qualitative)", "1.0 g/cm³"],
+                answer: d+" g/cm³ (Quantitative Physical)",
+                explain: "Level 4+: Density ($D=m/v$) is a quantitative physical property because it is measured with numbers."
             };
         },
+        // Electricity: Ohm's Law
         () => {
-            const v = [6, 12, 24][Math.floor(Math.random()*3)];
-            const r = [2, 3, 4, 6][Math.floor(Math.random()*4)];
+            const v = [6, 9, 12, 24][Math.floor(Math.random()*4)];
+            const r = [2, 3, 5, 10][Math.floor(Math.random()*4)];
             const i = (v/r).toFixed(1);
             return {
-                unit: "Electricity", color: "var(--elec)", visual: `CIRCUIT:\nVoltage = ${v}V\nResistance = ${r}Ω`,
-                q: "Calculate the Current (I) in Amps.",
+                unit: "Electricity", color: "var(--elec)", visual: `VOLTS: ${v}V\nOHMS: ${r}Ω`,
+                q: "What is the Current (I) in Amps?",
                 options: [i+"A", (v*r)+"A", (r/v).toFixed(1)+"A", "10A"],
                 answer: i+"A",
-                explain: "<strong>Level 4+:</strong> $I = V/R$. Current is the flow rate of electrons measured in **Amps**."
+                explain: "Level 4+: Current is the flow of charge ($I=V/R$). If resistance goes up, current goes down."
             };
         },
+        // Astronomy: Planet Types
         () => {
-            const p = [{n:"Mercury", t:"Terrestrial", f:"Rocky/Inner"}, {n:"Neptune", t:"Gas Giant", f:"Gaseous/Outer"}][Math.floor(Math.random()*2)];
+            const p = [{n:"Mars", t:"Terrestrial", f:"Rocky surface"}, {n:"Jupiter", t:"Gas Giant", f:"Gaseous/Fluid"}][Math.floor(Math.random()*2)];
             return {
                 unit: "Astronomy", color: "var(--space)", visual: `PLANET: ${p.n}`,
-                q: `Classify ${p.n} and explain its density compared to Earth.`,
-                options: ["Terrestrial (Inner/High Density)", "Gas Giant (Outer/Low Density)", "Dwarf Planet", "Star"],
+                q: `Classify ${p.n} and explain its density.`,
+                options: ["Terrestrial (Inner/High Density)", "Gas Giant (Outer/Low Density)", "Dwarf Planet", "Exoplanet"],
                 answer: p.t === "Terrestrial" ? "Terrestrial (Inner/High Density)" : "Gas Giant (Outer/Low Density)",
-                explain: `<strong>Level 4+:</strong> ${p.n} is a <b>${p.t}</b>. Inner planets are rocky and dense; outer are gas-based and low-density.`
+                explain: `Level 4+: ${p.n} is a ${p.t}. Inner planets are rocky/dense; outer planets are gas-based/low density.`
             };
         }
     ];
