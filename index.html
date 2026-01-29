@@ -2,147 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Grade 9 Science: Level 4 Mastery</title>
+    <title>Grade 9 Science: Level 4+ Infinite Simulator</title>
     <style>
         :root { --chem: #ef4444; --eco: #10b981; --space: #6366f1; --elec: #f59e0b; --dark: #0f172a; }
-        body { font-family: 'Inter', sans-serif; background: #cbd5e1; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 850px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
-        .nav { display: flex; background: #1e293b; padding: 10px; gap: 10px; }
-        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; color: white; background: rgba(255,255,255,0.1); font-weight: bold; }
-        .nav button.active { background: white; color: var(--dark); }
-        .content { padding: 30px; min-height: 450px; }
-        .visual-box { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; font-family: monospace; white-space: pre-wrap; font-size: 1.1rem; line-height: 1.5; }
+        body { font-family: 'Inter', sans-serif; background: #cbd5e1; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 900px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; display: flex; }
+        
+        /* Main Game Area */
+        .game-area { flex: 2; border-right: 2px solid #e2e8f0; }
+        .header { padding: 15px; text-align: center; color: white; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        .content { padding: 25px; }
+        
+        /* Calculator Sidebar */
+        .sidebar { flex: 1; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; }
+        .calc-display { background: #1e293b; color: #10b981; padding: 15px; border-radius: 8px; text-align: right; font-family: monospace; font-size: 1.5rem; margin-bottom: 10px; min-height: 40px; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .calc-btn { padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px; cursor: pointer; background: white; font-weight: bold; }
+        .calc-btn:hover { background: #e2e8f0; }
+
+        .visual-box { background: #f1f5f9; border-radius: 12px; padding: 20px; margin-bottom: 20px; font-family: monospace; white-space: pre-wrap; border: 1px solid #e2e8f0; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+        button.opt { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
         button.opt:hover:not(:disabled) { border-color: var(--dark); background: #f1f5f9; }
-        .feedback { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; line-height: 1.6; border-left: 10px solid; }
-        .correct { background: #dcfce7; color: #166534; border-color: var(--eco); }
-        .wrong { background: #fee2e2; color: #991b1b; border-color: var(--chem); }
+        .feedback { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; line-height: 1.6; border-left: 10px solid; font-size: 0.9rem; }
         .next-btn { width: 100%; margin-top: 20px; padding: 15px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; display: none; font-weight: bold; }
-        .formula-card { background: #f8fafc; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin: 10px 0; text-align: center; }
-        .hidden { display: none; }
+        .correct { background: #dcfce7; border-color: var(--eco); color: #166534; }
+        .wrong { background: #fee2e2; border-color: var(--chem); color: #991b1b; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <div class="nav">
-        <button id="btn-game" class="active" onclick="switchTab('game')">🎮 RANDOM CHALLENGE</button>
-        <button id="btn-cheat" onclick="switchTab('cheat')">📜 LEVEL 4+ CHEAT SHEET</button>
-    </div>
-    <div id="game-view">
-        <div id="unit-tag" style="padding: 10px; text-align: center; color: white; font-weight: bold; text-transform: uppercase;">Unit Loading...</div>
+    <div class="game-area">
+        <div id="unit-tag" class="header">GENERATING...</div>
         <div class="content">
             <div id="visual" class="visual-box"></div>
-            <div id="question" style="font-size: 1.3rem; font-weight: 700; margin-bottom: 25px;"></div>
+            <div id="question" style="font-weight:700; font-size:1.1rem; margin-bottom:15px;"></div>
             <div id="options" class="grid"></div>
-            <div id="feedback"></div>
-            <button id="next-btn" class="next-btn" onclick="generateRandomQuestion()">Generate Next Random Question →</button>
+            <div id="feedback" class="feedback"></div>
+            <button id="next-btn" class="next-btn" onclick="generateQuestion()">Next Random Challenge →</button>
         </div>
     </div>
-    <div id="cheat-view" class="hidden" style="padding:30px;">
-        <h2 style="text-align:center;">The Mastery Triangles</h2>
-        <div class="grid">
-            <div class="formula-card" style="border-top: 5px solid var(--chem);">
-                <h3>Chemistry: Density</h3>
-                <p>M (Mass) at Top</p>
-                <p>D (Density) | V (Volume) at Bottom</p>
-                <small>Cover the one you need!</small>
-            </div>
-            <div class="formula-card" style="border-top: 5px solid var(--elec);">
-                <h3>Electricity: Ohm's Law</h3>
-                <p>V (Voltage) at Top</p>
-                <p>I (Current) | R (Resistance) at Bottom</p>
-                <small>Cover 'I' to get V / R</small>
-            </div>
+
+    <div class="sidebar">
+        <h3 style="margin-top:0;">Quick Calc</h3>
+        <div id="display" class="calc-display">0</div>
+        <div class="calc-grid">
+            <button class="calc-btn" onclick="clearCalc()">C</button>
+            <button class="calc-btn" onclick="press('/')">/</button>
+            <button class="calc-btn" onclick="press('*')">*</button>
+            <button class="calc-btn" onclick="press('-')">-</button>
+            <button class="calc-btn" onclick="press('7')">7</button>
+            <button class="calc-btn" onclick="press('8')">8</button>
+            <button class="calc-btn" onclick="press('9')">9</button>
+            <button class="calc-btn" onclick="press('+')">+</button>
+            <button class="calc-btn" onclick="press('4')">4</button>
+            <button class="calc-btn" onclick="press('5')">5</button>
+            <button class="calc-btn" onclick="press('6')">6</button>
+            <button class="calc-btn" onclick="solve()">=</button>
+            <button class="calc-btn" onclick="press('1')">1</button>
+            <button class="calc-btn" onclick="press('2')">2</button>
+            <button class="calc-btn" onclick="press('3')">3</button>
+            <button class="calc-btn" onclick="press('0')">0</button>
         </div>
-        <div style="margin-top:20px; padding:15px; background:#eef2ff; border-radius:10px;">
-            <h3>Astronomy: Planet Types</h3>
-            <p><b>Terrestrial (Inner):</b> Mercury, Venus, Earth, Mars. Rocky, small, high density.</p>
-            <p><b>Gas Giants (Outer):</b> Jupiter, Saturn, Uranus, Neptune. Gaseous (H & He), massive, low density, many moons.</p>
-        </div>
-    </div>
-</div>
-
-<script>
-    const units = [
-        // ASTRONOMY UNIT (With detailed Level 4 logic)
-        () => {
-            const pData = [
-                {n: "Venus", t: "Terrestrial", d: "0.72 AU", f: "It has a thick, toxic CO2 atmosphere that traps heat (Greenhouse Effect)."},
-                {n: "Saturn", t: "Gas Giant", d: "9.58 AU", f: "It has a massive ring system and is so low-density it would float in water!"}
-            ];
-            const p = pData[Math.floor(Math.random()*pData.length)];
-            return {
-                unit: "Astronomy", color: "var(--space)",
-                visual: `PLANET: ${p.n}\nLOCATION: ${p.d} from Sun`,
-                q: `Classify ${p.n} and explain why it belongs in that category.`,
-                options: ["Terrestrial (Inner/Rocky)", "Gas Giant (Outer/Fluid)", "Dwarf Planet", "Star"],
-                answer: p.t === "Terrestrial" ? "Terrestrial (Inner/Rocky)" : "Gas Giant (Outer/Fluid)",
-                explain: `<strong>Level 4 Analysis:</strong> ${p.n} is a <b>${p.t}</b> planet. ${p.t === "Terrestrial" ? 
-                    "Inner planets like Venus formed closer to the Sun where it was too hot for gases to condense, leaving rocky, high-density materials." : 
-                    "Outer planets like Saturn formed beyond the 'frost line' where it was cool enough for massive amounts of hydrogen and helium to gather."} ${p.f}`
-            };
-        },
-        // CHEMISTRY UNIT (Based on your photo question #14)
-        () => {
-            const m = 360; const v = 45; const ans = "8.0 g/cm³";
-            return {
-                unit: "Chemistry", color: "var(--chem)",
-                visual: `OBJECT DATA:\nMass (m): ${m}g\nVolume (V): ${v}cm³`,
-                q: "What is the density of this metal block? (From your test photo!)",
-                options: [ans, "0.125 g/cm³", "405 g/cm³", "16 g/cm³"],
-                answer: ans,
-                explain: "<strong>Step-by-Step:</strong> Cover 'D' in your triangle. You see M / V. $360 \\div 45 = 8.0$. Remember the units: $g/cm^3$!"
-            };
-        },
-        // ELECTRICITY UNIT (Symbols & Math)
-        () => {
-            const v = 12; const r = 3; const i = 4;
-            return {
-                unit: "Electricity", color: "var(--elec)",
-                visual: `CIRCUIT SPECS:\nBattery: ${v}V\nResistor: ${r}Ω`,
-                q: "What is the Current (I) in Amps?",
-                options: [i+"A", (v*r)+"A", (r/v).toFixed(2)+"A", "15A"],
-                answer: i+"A",
-                explain: "<strong>Step-by-Step:</strong> Cover 'I' in your triangle. You see V / R. $12 \\div 3 = 4$. Current is the flow of electrons, measured in Amps."
-            };
-        }
-    ];
-
-    function generateRandomQuestion() {
-        const gen = units[Math.floor(Math.random() * units.length)];
-        const data = gen();
-        document.getElementById('unit-tag').innerText = data.unit;
-        document.getElementById('unit-tag').style.background = data.color;
-        document.getElementById('visual').innerText = data.visual;
-        document.getElementById('question').innerText = data.q;
-        const opts = document.getElementById('options');
-        opts.innerHTML = '';
-        data.options.sort(() => Math.random() - 0.5).forEach(o => {
-            const b = document.createElement('button');
-            b.className = 'opt';
-            b.innerText = o;
-            b.onclick = () => {
-                const fb = document.getElementById('feedback');
-                fb.style.display = 'block';
-                fb.className = 'feedback ' + (o === data.answer ? 'correct' : 'wrong');
-                fb.innerHTML = `<strong>${o === data.answer ? '✅ CORRECT' : '❌ INCORRECT'}</strong><br>${data.explain}`;
-                document.getElementById('next-btn').style.display = 'block';
-                document.querySelectorAll('.opt').forEach(btn => btn.disabled = true);
-            };
-            opts.appendChild(b);
-        });
-        document.getElementById('feedback').style.display = 'none';
-        document.getElementById('next-btn').style.display = 'none';
-    }
-
-    function switchTab(t) {
-        document.getElementById('game-view').classList.toggle('hidden', t !== 'game');
-        document.getElementById('cheat-view').classList.toggle('hidden', t !== 'cheat');
-        document.getElementById('btn-game').classList.toggle('active', t === 'game');
-        document.getElementById('btn-cheat').classList.toggle('active', t === 'cheat');
-    }
-    generateRandomQuestion();
-</script>
-</body>
-</html>
+        <div style="margin-top:20px; font-size:
